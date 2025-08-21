@@ -1,10 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 typedef struct Historico{
     char* nomestream;
-    char* periodo;
+    char* data_inicio;
+    char* data_fim;
     struct Historico* prox;
 }Historico;
 
@@ -56,7 +58,14 @@ Apresentadores* Busca_Apresentador(char* nome, Apresentadores* lista);
 Programas* Cadastra_Programa(Programas* raiz,char* nome,Apresentadores* lista, Stream* stream, Categorias* categoria);
 Programas* busca_Programa(Programas* raiz, char* nome);
 void mostra_Programa(Programas* raiz);
+Programas* removePrograma(Programas* raiz, char* nomePrograma);
 void Exibe_Historico(Apresentadores* apresentador);
+Categorias* removeCategoria(Categorias* raiz, char* nomeCategoria);
 int apresentadorTemProgramaNosProgramas(Programas* prog, Apresentadores* apresentador);
 int apresentadorTemProgramaNaStream(Categorias* cat, Apresentadores* apresentador);
 void Associar_Stream(Stream* stream, Apresentadores* apresentador);
+void libera_Programa(Programas* raiz);
+void libera_Categoria(Categorias* raiz);
+void libera_Stream(Stream* raiz);
+void libera_Historico(Historico* lista);
+void libera_apresentadores(Apresentadores* lista);
