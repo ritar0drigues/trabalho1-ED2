@@ -105,7 +105,7 @@ Apresentadores* menu_Categorias(Categorias** raiz,Apresentadores* lista,Stream* 
             }
             case 2:
                 if((*raiz)==NULL){
-                    printf("Arvore vazia.\n");
+                    printf("Lista de categorias está vazia.\n");
                 }
                 else{
                     mostra_Categoria((*raiz));

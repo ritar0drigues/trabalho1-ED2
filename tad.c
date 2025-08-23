@@ -16,7 +16,6 @@ Stream* Cadastra_stream(Stream* raiz, char* nome, char* site){
       na chamada da função para definir se a função vai ser chamada para a subarvore à esquerda da raiz atual ou à direita da raiz atual até chegar
        em um valor NULL que seria o fim daquele galho da àrvore cria o novo nó e e atribui ele a variável aux  no fim a função retorna aux o que garente que novo no
        seja alocado como filho da raiz da função*/
-    Stream* aux = raiz;
     if(!raiz){
         Stream* novo = (Stream*) malloc(sizeof(Stream));
         if(novo){
@@ -29,7 +28,7 @@ Stream* Cadastra_stream(Stream* raiz, char* nome, char* site){
         else{
             printf("Erro de alocacao.\n");
         }
-        aux = novo;
+        raiz = novo;
     }
     else{
         if(strcmp(nome, raiz->nomestream) < 0){
@@ -42,7 +41,7 @@ Stream* Cadastra_stream(Stream* raiz, char* nome, char* site){
             printf("Já existe uma Stream de nome '%s' cadastrada.\n", nome);
         }
     }
-    return aux;
+    return raiz;
 }
 
 Stream* busca_Stream(Stream* raiz, char* nome) {
@@ -67,72 +66,77 @@ Stream* busca_Stream(Stream* raiz, char* nome) {
     return aux;
 }
 
-Categorias* Cadastra_Categoria(Categorias* raiz, char* nome, char* tipo){
-    /*Recebe como parâmetro a raiz da árvore de categorias o nome da nova categoria e o tipo dela, a função  a função declara uma variável aux  que recebe a raiz e percorre recursivamente a árvore 
-      comparando o nome da nova categoria com o nome da categoria do nó que foi passado como parametro na chamada da função para definir se a 
-      função vai ser chamada para a subarvore à esquerda da raiz atual ou à direita da raiz atual até chegar em um valor NULL que seria
-      o fim daquele galho da àrvore cria o novo nó e atribui ele a aux no fim a função retorna aux o que garente que novo no
-       seja alocado como filho da raiz da função*/
-    Categorias* aux = raiz;
-    if(!raiz){
-        Categorias* novo = (Categorias*) malloc(sizeof(Categorias));
-        if(novo){
-            novo->nomecategoria = strdup(nome);
-            novo->tipo = strdup(tipo);
-            novo->programas = NULL;
-            novo->esquerda = NULL;
-            novo->direita = NULL;
+Categorias* Cadastra_Categoria(Categorias* lista, char* nome, char* tipo) {
+    /*A fução recebe a lista de categorias de uma stream o nome da nova categoria e o tipo dela cria um novo no do tipo categoria e o preenche e o coloca na lista
+     de categorias em ordem alfabetica retornando o inicio da lista já atualizada*/
+    Categorias* novo = (Categorias*) malloc(sizeof(Categorias));
+    novo->nomecategoria = strdup(nome);
+    novo->tipo = strdup(tipo);
+    novo->programas = NULL;
+    if (lista) {// Se a lista não é vazia
+        Categorias* atual = lista;
+        if (strcmp(nome, lista->nomecategoria) < 0){//Se o nome da nova categoria vem antes do nome do primeiro no da lista na ordem alfabética o novo no é colocado no inicio da lista atualizado os ponteiros.
+            while (atual->prox != lista) {
+                atual = atual->prox;
+            }
+            atual->prox = novo;
+            novo->prox = lista;
+            lista = novo;
         }
-        else{
-            printf("Erro de alocacao.\n");
+        else {// se a nova categoria não entrar no começo da lista
+            while (atual->prox != lista && strcmp(atual->prox->nomecategoria, nome) < 0) {//Percorre a lista até encontrar um programa que vem depois do novo na ordem alfabética ou até chgar ao último nóda lista
+                atual = atual->prox;
+            }
+            if (strcmp(atual->prox->nomecategoria, nome) == 0) {//Verifica se já existe uma categoria com o mesmo nome
+                printf("Já existe uma categoria com o nome %s cadastrada.\n", nome);
+                free(novo->nomecategoria);
+                free(novo->tipo);
+                free(novo);
+            }
+            else {//se não existe categoria com o mesmo nome os ponteiros são  atualizados encaixando o novo no na lista de forma ordenada
+                novo->prox = atual->prox;
+                atual->prox = novo;
+            }
         }
-        aux = novo;
+    } 
+    else {//Se a lista estiver vazia o novo no aponta para si mesmo e lista tera apenas o novo no
+        novo->prox = novo;
+        lista = novo;
     }
-    else{
-        if(strcmp(nome, raiz->nomecategoria) < 0){
-            raiz->esquerda = Cadastra_Categoria(raiz->esquerda, nome, tipo);
-        }
-        else if(strcmp(nome, raiz->nomecategoria) > 0){
-            raiz->direita = Cadastra_Categoria(raiz->direita, nome, tipo);
-        }
-        else{
-            printf("Já existe uma categoria com o nome '%s' cadastrada.\n", nome);
-        }
-    }
-    return aux;
+    return lista;
 }
 
-Categorias* busca_Categorias(Categorias* raiz, char* nome){
-    /*A função recebe a raiz de uma árvore de categorias e o nome da categoria a ser procurada o ponteiro aux é iniciado com NULL para que a função retorne NULL caso ela chegue
-     ao último filho do galho, onde ela procura pela categoria, e mesmo assim não tenha encontrado a categoria. A variável cmp guarda o resultado da comparão do nome informado 
-     com o nome da raiz atual se for zero significa que são iguais e a Categoria foi encontrada se for menor que zero significa que o nome informado vem antes do nome da 
-     Categoria em ordem alfabética e por isso a função é chamada para a subárvore da esquerda  e se for maior significa que vem depois por isso a função é chamada para a 
-     subárvore da direita*/
-    Categorias* aux = NULL;
-    if (raiz){
-        int cmp = strcmp(nome, raiz->nomecategoria);
-        if(cmp==0){
-            aux = raiz;
-        }
-        else if(cmp < 0){
-            aux = busca_Categorias(raiz->esquerda, nome);
-        }
-        else{
-            aux = busca_Categorias(raiz->direita, nome);
-        }
+
+Categorias* busca_Categorias(Categorias* lista, char* nome){
+    /*A função  recebe uma lista de  Categorias de uma determinada Stream e o nome da categoria a ser buscada percorre a lista procurando pelacategoria
+     se encontrar retorna a posição de memória da categoria buscada se não encontrar retorna NULL*/
+    Categorias* resultado = NULL; 
+    Categorias* atual = lista;
+    if(lista){// Verifia se a lista não é vazia
+        do {
+            if(strcmp(atual->nomecategoria, nome) == 0){//Verifica se é a categoria buscada
+                resultado = atual;// atualisa o resultado com a posição de memória da categoria buscada.
+            }
+            else{//se não é a categoria buscada vai para a próxima categoria
+                atual = atual->prox;
+            }
+        } while(atual != lista && !resultado);//Percorre a lista até encontrar a categoria ou até voltar para o início
     }
-    return aux;
+    return resultado;
 }
 
-void mostra_Categoria(Categorias* raiz){
-    /*Recebe como parâmetro a raiz de uma árvore e percorre recursivamente a árvore binária garantindo a exibição em ordem alfabética 
-    imprimindo o nome e o tipo de cada categoria da stream*/
-    if(raiz){
-        mostra_Categoria(raiz->esquerda);
-        printf("Nome: %s | Tipo: %s\n", raiz->nomecategoria, raiz->tipo);
-        mostra_Categoria(raiz->direita);
+void mostra_Categoria(Categorias* lista){
+    /*A função recebe um lista de categorias de uma determinada Stream e a percorre através de uma estrutura de repetição printando o nome e o tipo de cada categoria*/
+    if (lista) {
+        Categorias* atual = lista;
+        do {
+            printf("Nome: %s\n", atual->nomecategoria);
+            printf("Tipo: %s\n", atual->tipo);
+            atual = atual->prox;
+        } while (atual != lista);
     }
 }
+
 
 Apresentadores* criar_Apresentador(const char* nome, Stream* streamAtual, Categorias* categoria){
     /*A função recebe como parametro o nome do apresentado o ponteiro para a stream em que ele será cadastrado e um para a categoria
@@ -492,58 +496,72 @@ void Exibe_Historico(Apresentadores* apresentador){
     }
 }
 
-Categorias* removeCategoria(Categorias* raiz, char* nomeCategoria) {
-    /* A função recebe como parâmetro a raiz da árvore de categorias e o nome da categoria que será removida ela percorre a ávore recursivamente até encontrar a categoria
-     ou até encontrar um valor NULL se encontrar a categoria, a remove e se não a arvore permanece inalterada*/
-    if (raiz == NULL) {
-        printf("Categoria não encontrada.\n");
-        return NULL;
+Categorias* removeNoListaCircular(Categorias* lista, Categorias* anterior, Categorias* remover){
+    /*A função recebe a lista de categorias de uma stream um ponteiro para a categoria que sera removida e o ponteiro para a categoria anterior a que será removida
+     o remoe e retorna a lista atualizada*/
+    if (lista->prox == lista) {
+        lista = NULL;
     }
-    int cmp = strcmp(nomeCategoria, raiz->nomecategoria);
-    if (cmp < 0) {// verifica se o nome do programa a ser apagado vem antes do nome da raiz atual se sim chama a função para a subarvore da esquerda
-        raiz->esquerda = removeCategoria(raiz->esquerda, nomeCategoria);
+    else if(remover == lista) {
+        // remover é o primeiro da lista
+        Categorias* ultimo = lista;
+        while (ultimo->prox != lista){ 
+            ultimo = ultimo->prox;
+        }
+        lista = remover->prox; // novo início
+        ultimo->prox = lista;  // mantém circularidade
     }
-    else if (cmp > 0) {// verifica se o nome do programa a ser apagado vem depois do nome da raiz atual se sim chama a função para a subarvore da direita
-        raiz->direita = removeCategoria(raiz->direita, nomeCategoria);
+    else{
+         anterior->prox = remover->prox; // remove o nó do meio/final
     }
-    else {//Programa encontrado
-        if (raiz->programas) {// verifica se a raiz possui programas
-            printf("Não é possível remover: a categoria contém programas.\n");
-            return raiz;
-        }
-        // Caso 1 ou 2: nó tem zero ou um filho
-        if (raiz->esquerda == NULL) {
-            Categorias* temp = raiz->direita;
-            free(raiz->nomecategoria);
-            free(raiz->tipo);
-            free(raiz);
-            return temp;
-        }
-        else if (raiz->direita == NULL) {
-            Categorias* temp = raiz->esquerda;
-            free(raiz->nomecategoria);
-            free(raiz->tipo);
-            free(raiz);
-            return temp;
-        }
-        // Caso 3: nó tem dois filhos
-        else {
-            Categorias* temp = raiz->direita;
-            while (temp->esquerda != NULL) { //percorre a árvore até chegar ao menor da direita
-                temp = temp->esquerda;
-            }
-            //libera as strings antigas com os valores que serão apagados
-            free(raiz->nomecategoria);
-            free(raiz->tipo);
-            //copia as informações do menor da esquerda para o nó onde ficavam as informações que forma apagadas
-            raiz->nomecategoria = strdup(temp->nomecategoria);
-            raiz->tipo = strdup(temp->tipo); 
-            //Apaga recursivamente o nó onde ficava o menor da direita 
-            raiz->direita = removeCategoria(raiz->direita, temp->nomecategoria);
-        }
-    }
-    return raiz;
+    //libera os espaços alocados
+    free(remover->nomecategoria);
+    free(remover->tipo);
+    free(remover);
+    printf("Categoria removida com sucesso.\n");
+    return lista;
 }
+
+void buscaCategoriaEAnterior(Categorias* lista, char* nome, Categorias** anterior, Categorias** remover){
+    /*A função recebe a lista de categorias o nome da categoria a ser buscada e o ponteiro para guardar o anterior ao que será removido e um para guradar o que será 
+     removido ambos por referência e percorre a lista até encontrar o no que sera removido e o seu antecessor caso não enncontre, o  ponteiro que gurdaria a posição do no
+      a ser removido recebe NULL*/
+    *anterior = lista;
+    *remover = lista;
+    if(lista){
+        do{
+            *anterior = *remover;
+            *remover = (*remover)->prox;
+        }while(*remover != lista && strcmp((*remover)->nomecategoria, nome) != 0);
+
+        if(strcmp((*remover)->nomecategoria, nome) != 0){
+            *remover = NULL; // não encontrado
+        }
+    }
+}
+
+Categorias* removeCategoria(Categorias* lista, char* nomeCategoria){
+    /*A função recebe a lista de categorias e o nome da categoria que será removida chama a função buscaCategoriaEAnterior para atualizar os ponteiros atual e anterior
+     corretamente, depois verifica se o no que sera removido tem ou não programas e se não tiver a função removeNoListaCircular é chamada e remove o no e então retorna a lista atualizada*/
+    if (lista){
+        Categorias* anterior = NULL;
+        Categorias* remover = NULL;
+        buscaCategoriaEAnterior(lista, nomeCategoria, &anterior, &remover);//Preenche o ponteiros atual e anterior com o no a ser removido e o no antecessor a ele respectivamente
+        if (!remover){
+            printf("Categoria não encontrada.\n");
+        }
+        else{
+            if (remover->programas){//verifica se a categoria possui programas
+                printf("A categoria possui programas cadastrados.\n");
+            }
+            else{// SE Não possui programas a categoria é removida
+                lista = removeNoListaCircular(lista, anterior, remover);
+            }
+        }
+    }
+    return lista; // único return no final
+}
+
 
 int apresentadorTemProgramaNosProgramas(Programas* prog, Apresentadores* apresentador){
     /*A função recebe como parâmetro a raiz da arvore de programas e um ponteiro para um apresentador e percorre a arvore recursuvamente comparando o apresentador 
@@ -560,18 +578,18 @@ int apresentadorTemProgramaNosProgramas(Programas* prog, Apresentadores* apresen
     return aux;
 }
 
-int apresentadorTemProgramaNaStream(Categorias* cat, Apresentadores* apresentador) {
-    /*A função recebe como parâmetro a raiz da arvore de categorias de uma stream e um ponteiro para um apresentador e percorre a arvore recursivamente comparando o apresentador 
-     de cada programa em cada categoria com o apresentador que foi  passado como parâmetro se o apresentador já apresenta algum programa a função retorna 1 (verdadeiro) de não retorna 0 (falso)*/
+int apresentadorTemProgramaNaStream(Categorias* lista, Apresentadores* apresentador) {
+    /*A função recebe a lista de categorias de uma Stream e o ponteiro para um apresentador ela percorre todas as categorias verificando se o apresentador
+     já apresenta algum programa em alguma categoria se sim retorna 1 (verdadeiro) se não retorna 0 (false)*/
     int aux = 0;
-    if (cat){
-        if(cat->programas && apresentadorTemProgramaNosProgramas(cat->programas, apresentador)){//verifica se algum programa da categoria atual já é apresentado pelo apresentador passado como parâmetro
-            aux = 1;
-        }
-        //Se não é o mesmo a função é chamada novamente para a subarvore da direita e para a da esquerda
-        else if(apresentadorTemProgramaNaStream(cat->esquerda, apresentador) || apresentadorTemProgramaNaStream(cat->direita, apresentador)){
-            aux = 1;
-        }
+    if(lista){
+        Categorias* atual = lista;
+        do{
+            if(atual->programas && apresentadorTemProgramaNosProgramas(atual->programas, apresentador)){//verifica se algum programa da categoria atual já é apresentado pelo apresentador passado como parâmetro
+                aux = 1;
+            }
+            atual = atual->prox;
+        }while(atual!=lista);
     }
     return aux;
 }
@@ -655,17 +673,26 @@ void libera_Programa(Programas* raiz){
     }
 }
 
-void libera_Categoria(Categorias* raiz){
-    /*recebe a raiz para uma arvore de categorias e a percorre recursivamente liberando ca espaço alocado*/
-    if(raiz){
-        libera_Programa(raiz->programas);//libera a árvore de programas
-        libera_Categoria(raiz->direita);//chama para liberar a subarvore da direita
-        libera_Categoria(raiz->esquerda);//chama para liberar a subarvore da esquerda
-        free(raiz->tipo); 
-        free(raiz->nomecategoria);
-        free(raiz);
+void libera_Categoria(Categorias* lista){
+    /*A função recebe uma lista de categorias e a percorre liberando todos os seus espaços alocados*/
+    if (lista) {//Verifica se a lista é vazia
+        Categorias* atual = lista->prox;
+        while (atual != lista) {// Percoore a lista do segundo nó até o ultimo.
+            Categorias* temp = atual;
+            atual = atual->prox;
+            free(temp->tipo);
+            free(temp->nomecategoria);
+            libera_Programa(temp->programas);
+            free(temp);
+        }
+        // libera o nó inicial por último
+        free(lista->tipo);
+        free(lista->nomecategoria);
+        libera_Programa(lista->programas);
+        free(lista);
     }
 }
+
 
 void libera_Stream(Stream* raiz){
     /*recebe a raiz da arvore de Stream e a percorre recursivamete por completo liberando cada espaço alocado dentro dela*/
