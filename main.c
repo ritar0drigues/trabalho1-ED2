@@ -250,23 +250,36 @@ Apresentadores* menu_Apresentador(Apresentadores* lista, Stream* raiz){
                 Mostra_Apresentador(lista);
                 break;
             case 3:{
-                char buscarap[50],buscarst[50];
+                char buscarap[50], buscarst[50], novaCategoria[50];
                 printf("Informe o nome do apresentador.\n");
-                scanf("%49[^\n]",buscarap);
+                scanf("%49[^\n]", buscarap);
                 getchar();
                 printf("Informe o nome da stream:\n");
                 scanf("%49[^\n]", buscarst);
                 getchar();
-                Apresentadores* apresentador = Busca_Apresentador(buscarap,lista);
-                Stream* stream = busca_Stream(raiz,buscarst);
-                if(apresentador==NULL){
+                printf("Informe a nova categoria na stream '%s':\n", buscarst);
+                scanf("%49[^\n]", novaCategoria);
+                getchar();
+                
+                Apresentadores* apresentador = Busca_Apresentador(buscarap, lista);
+                Stream* stream = busca_Stream(raiz, buscarst);
+                
+                if(apresentador == NULL){
                     printf("Apresentador não encontrado.\n");
                 }
-                if(stream==NULL){
+                else if(stream == NULL){
                     printf("Stream não encontrada.\n");
                 }
                 else{
-                    Associar_Stream(stream,apresentador);
+                    // Buscar a categoria na stream ANTES de chamar Associar_Stream
+                    Categorias* categoria = busca_Categorias(stream->categoria, novaCategoria);
+                    if(categoria == NULL){
+                        printf("ERRO: Categoria '%s' não encontrada na stream '%s'.\n", 
+                            novaCategoria, buscarst);
+                    }
+                    else{
+                        Associar_Stream(stream, apresentador, categoria);
+                    }
                 }
                 break;
             }
