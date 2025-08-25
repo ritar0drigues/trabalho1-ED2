@@ -1,7 +1,7 @@
 #include "tad.h"
 
 void mostra_Stream(Stream* raiz){
-    /*Recebe como parâmetro a raiz de uma árvore e percorre recursivamente a árvore binária garantindo a exibição em ordem alfabética 
+    /*Recebe como parâmetro a raiz de uma árvore de streams e percorre recursivamente a árvore binária garantindo a exibição em ordem alfabética 
     imprimindo o nome e o site de cada Stream*/
     if(raiz){
         mostra_Stream(raiz->esquerda);
@@ -10,12 +10,75 @@ void mostra_Stream(Stream* raiz){
     }
 }
 
+void FiltraStreamsporCategoria(Stream* raiz, char* categoria,int* flag){
+    /*A função recebe como parâmetro a raiz para uma árvore de streams o nome de uma categoria e a posição de memoria de uma flag ela percorre recursivamente a árvore
+     verificando se na lista de categorias de cada stream existe uma categoria com o nome informado pelo usuário exibindo o nome da stream caso a categoria exista nela
+      e atualizando a flag para sinalizar que pelo menos uma das streams possui a categoria informada*/
+    if(raiz){
+        FiltraStreamsporCategoria(raiz->esquerda, categoria, flag);
+        Categorias* atual = raiz->categoria;
+        if(atual){ //Verifica se a lista de categorias não é vazia
+            do{
+                if(strcmp(atual->nomecategoria,categoria)==0){ //verifica se o nome da categoria é igual ao nome informado pelo usuário
+                    printf("%s \n", raiz->nomestream);
+                    *flag = 1; //Atualiza a flag 
+                }
+                atual = atual->prox;
+            }while(atual!=raiz->categoria); //percorre a lista de categorias da stream
+        }
+        FiltraStreamsporCategoria(raiz->direita, categoria, flag);
+    }
+}
+
+void FiltraStreamsporTipo(Stream* raiz, char* tipo,int* flag){
+    /*A função recebe como parâmetro a raiz para uma árvore de streams um suposto tipo de uma categoria e a posição de memoria de uma flag ela percorre recursivamente a árvore
+     verificando se na lista de categorias de cada stream existe uma categoria com o tipo informado pelo usuário exibindo o nome da stream caso exista nela alguma categoria com esse tipo,
+      e atualizando a flag para sinalizar que pelo menos uma das streams possui uma categoria com o tipo informado*/
+    if(raiz){
+        FiltraStreamsporTipo(raiz->esquerda, tipo, flag);
+        Categorias* atual = raiz->categoria;
+        if(atual){ //Verifica se a lista de categorias não é vazia
+            int encontrou = 0; //inicializa uma segunda flag que ira sinalizar se o tipo de categoria foi encontrado ou não
+            do{
+                if(strcmp(atual->tipo,tipo)==0){//verifica se o tipo da categoria é igual ao tipo informado pelo usuário
+                    encontrou = 1;//Atualiza a flag
+                }
+                atual = atual->prox;
+            }while(atual!=raiz->categoria); //percorre a lista de categorias da stream
+            if(encontrou){
+                printf("%s\n", raiz->nomestream);
+                *flag = 1;//Atualiza a flag que sera usada  fora da função
+            }
+        }
+        FiltraStreamsporTipo(raiz->direita,tipo, flag); 
+    }
+}
+
+//EXIBE APRSENTADORES
+void ExibeApresentadoresDeUmaStream (Apresentadores*lista, char* nomeStream,int* flag){
+    /*A função recebe uma lista de apresentadores o nome de uma stream  e imprime os aprsentadores que estão associados a stream com o nome informado e retorna uma flag
+     para sinalizar se foi encontrado algum apresentador associado a stream*/
+    if(lista){
+        Apresentadores* atual = lista;
+        while(atual!=NULL){
+            if(strcmp(atual->streamatual->nomestream,nomeStream)==0){
+                printf("%s\n", atual->nomeapresentador);
+                *flag = 1;
+            }
+            atual = atual->prox;
+        }
+    }
+}
+
 Stream* Cadastra_stream(Stream* raiz, char* nome, char* site){
-    /*Recebe como parâmetro a raiz da árvore de streams o nome da nova stream e o site dela, a função declara uma variável aux  que recebe
-     a raiz e depois percorre recursivamente a árvore comparando o nome da nova stream com o nome da stream do nó que foi passado como parametro
-      na chamada da função para definir se a função vai ser chamada para a subarvore à esquerda da raiz atual ou à direita da raiz atual até chegar
-       em um valor NULL que seria o fim daquele galho da àrvore cria o novo nó e e atribui ele a variável aux  no fim a função retorna aux o que garente que novo no
-       seja alocado como filho da raiz da função*/
+    /*Recebe como parâmetro a raiz da árvore de streams o nome da nova stream e o site dela, a função  percorre recursivamente a árvore comparando o nome da nova stream com o nome da stream do nó que foi passado como parametro
+      na chamada da função para definir se a função vai ser chamada para a subarvore à esquerda da raiz atual ou à direita da raiz atual até chegar em um valor NULL que
+      seria o fim daquele galho da àrvore cria o novo nó e e atribui ele a raiz no fim a função retorna raiz o que garente que novo no seja alocado como filho da raiz da função*/
+    if (!validarURL(site)) {
+        printf("ERRO: URL inválida! Deve começar com http:// ou https:// e ter formato válido.\n");
+        printf("Exemplos válidos: https://www.exemplo.com ou http://stream.com\n");
+        return raiz;
+    }
     if(!raiz){
         Stream* novo = (Stream*) malloc(sizeof(Stream));
         if(novo){
@@ -69,6 +132,10 @@ Stream* busca_Stream(Stream* raiz, char* nome) {
 Categorias* Cadastra_Categoria(Categorias* lista, char* nome, char* tipo) {
     /*A fução recebe a lista de categorias de uma stream o nome da nova categoria e o tipo dela cria um novo no do tipo categoria e o preenche e o coloca na lista
      de categorias em ordem alfabetica retornando o inicio da lista já atualizada*/
+    if(!validarTipoCategoria(tipo)){
+        printf("ERRO: Tipo de categoria inválido! Use: notícias, esporte ou entretenimento\n");
+        return lista;
+    }
     Categorias* novo = (Categorias*) malloc(sizeof(Categorias));
     novo->nomecategoria = strdup(nome);
     novo->tipo = strdup(tipo);
@@ -115,9 +182,9 @@ Categorias* busca_Categorias(Categorias* lista, char* nome){
     if(lista){// Verifia se a lista não é vazia
         do {
             if(strcmp(atual->nomecategoria, nome) == 0){//Verifica se é a categoria buscada
-                resultado = atual;// atualisa o resultado com a posição de memória da categoria buscada.
+                resultado = atual;// atualiza o resultado com a posição de memória da categoria buscada.
             }
-            else{//se não é a categoria buscada vai para a próxima categoria
+            else{
                 atual = atual->prox;
             }
         } while(atual != lista && !resultado);//Percorre a lista até encontrar a categoria ou até voltar para o início
@@ -134,6 +201,21 @@ void mostra_Categoria(Categorias* lista){
             printf("Tipo: %s\n", atual->tipo);
             atual = atual->prox;
         } while (atual != lista);
+    }
+}
+
+void ExibeApresentadoresPorCategoria(Apresentadores* lista, char* categoria) {
+    int encontrou = 0;
+    Apresentadores* atual = lista;
+    while (atual != NULL) {
+        if(strcmp(atual->categoria->nomecategoria, categoria) == 0){
+            printf("Apresentador: %s | Stream: %s\n",atual->nomeapresentador,atual->streamatual->nomestream);
+            encontrou = 1;
+        }
+        atual = atual->prox;
+    }
+    if (!encontrou) {
+        printf("Nenhum apresentador encontrado para a categoria %s\n", categoria);
     }
 }
 
@@ -251,9 +333,9 @@ void Mostra_Apresentador(Apresentadores* lista){
 }
 
 Apresentadores* Busca_Apresentador( const char* nome, Apresentadores* lista){
-    /* A função recebe uma lista de apresentadores e o nome do apresentador a ser buscado, ela percorre a lista duplamente encadeada de apresentadores
-     através de uma estrutura de repetição até que o ponteiro atual receba um valor NULL ou até que o nome do apresentador atual seja igual ao nome informado
-     pelo usuario garantindo que o return atual retorne NULL caso o apresentador não seja encontrado ou o endereço de memória para o nó do apresentador caso ele seja encontrado*/
+    /* A função recebe uma lista de apresentadores e o nome do apresentador a ser buscado, ela percorre a lista duplamente encadeada de apresentadores até que o
+     ponteiro atual receba um valor NULL ou até que o nome do apresentador atual seja igual ao nome informado pelo usuario  retornando NULL caso o apresentador não
+     seja encontrado ou o endereço de memória para o nó do apresentador caso ele seja encontrado*/
     Apresentadores* atual = lista;
     while(atual!=NULL && strcmp(nome,atual->nomeapresentador)!=0){
         atual = atual->prox;
@@ -262,23 +344,54 @@ Apresentadores* Busca_Apresentador( const char* nome, Apresentadores* lista){
 }
 
 void lerDadosPrograma(char* periodicidade, char* duracao, char* inicio, char* tipo, char* apresentador) {
-   /*recebe como parâmetro os ponteiros para onde serão armazenados temporariamente os dados do programa e lê cada um dos dados informados pelo usuário*/ 
-    printf("Informe a periodicidade do programa:\n");
-    scanf("%49[^\n]", periodicidade);
-    getchar();
+    /*A função lê os dados do programa e valida as informações inseridas.*/
+    int periodicidade_valida = 0;
+    int duracao_valida = 0;
+    int inicio_valido = 0;
+    do{
+        printf("Informe a periodicidade (ex: diário, semanal-segunda, semanal-segunda-quarta-sexta):\n");
+        scanf("%49[^\n]", periodicidade);
+        getchar();
+        if (!validarPeriodicidade(periodicidade)){
+            printf("ERRO: Periodicidade inválida!\n");
+            printf("Use: 'diário' ou 'semanal-dia1-dia2...' (ex: semanal-segunda-quarta-sexta)\n");
+        }
+        else {
+            periodicidade_valida = 1;
+        }
+    }while(!periodicidade_valida);
 
-    printf("Informe a duração do programa:\n");
-    scanf("%49[^\n]", duracao);
-    getchar();
+    do {
+        printf("Informe a duração do programa (formato HH:MM, ex: 01:30):\n");
+        scanf("%49[^\n]", duracao);
+        getchar();
+        
+        if (!validarDuracao(duracao)) {
+            printf("ERRO: Duração inválida! Use formato HH:MM (ex: 01:30, 02:00).\n");
+            printf("Duração deve ser entre 00:01 e 24:00.\n");
+        }
+        else {
+            duracao_valida = 1;
+        }
+    } while (!duracao_valida);
 
-    printf("Informe o horário de início do programa:\n");
-    scanf("%49[^\n]", inicio);
-    getchar();
+    do {
+        printf("Informe o horário de início do programa (formato HH:MM, ex: 14:30):\n");
+        scanf("%49[^\n]", inicio);
+        getchar();
+        
+        if (!validarFormatoHorario(inicio)) {
+            printf("ERRO: Horário inválido! Use formato HH:MM (ex: 09:00, 14:30).\n");
+            printf("Horas: 00-23, Minutos: 00-59.\n");
+        }
+        else {
+            inicio_valido = 1;
+        }
+    } while (!inicio_valido);
 
-    printf("Informe o tipo do programa:\n");
+    printf("Informe o tipo do programa (ao vivo/sob demanda):\n");
     scanf("%49[^\n]", tipo);
     getchar();
-
     printf("Informe o nome do apresentador:\n");
     scanf("%49[^\n]", apresentador); 
     getchar();
@@ -323,8 +436,12 @@ Programas* Cadastra_Programa(Programas* raiz, char* nome, Apresentadores* lista,
     /*A função recebe como parâmetro a raiz para a arvore de programas da categoria um ponterio para a stream e um para a categoria onde o programa será cadastrado além do 
      nome do novo programa ela percorre recursivamente a árvore até chegar ao local onde o novo programa deve ser criado cria ele e o seta na árvore corretamente*/
     char periodicidade[50], duracao[50], inicio[50], tipo[50], apresentadorNome[50];
-    if(!raiz){//Verifica se a raiz é NULL
+    if(!raiz){
         lerDadosPrograma(periodicidade, duracao, inicio, tipo, apresentadorNome);// lê as informações do programa
+        if (!validarTipoPrograma(tipo)) {
+            printf("ERRO: Tipo de programa inválido! Use: ao vivo ou sob demanda\n");
+            return NULL;
+        }
         Apresentadores* apresentador = validarApresentador(apresentadorNome, lista, stream, categoria);//verifica se o apresentador existe e se ele está na mesma categoria e stream do programa
         if(!apresentador){
             raiz = NULL; // se o apresentador não pode ser validado o programa não é criado então a raiz recebe NULL
@@ -482,7 +599,6 @@ Programas* removePrograma(Programas* raiz, char* nomePrograma) {
 
 
 void Exibe_Historico(Apresentadores* apresentador){
-    // recebe o apresentador e exibe todo o seu histórico
     if(apresentador->lista==NULL){//verifica se o histórico do apresentador não é NULL
         printf("O histórico está vazio.\n");
     }
@@ -728,4 +844,277 @@ void libera_apresentadores(Apresentadores* lista){
         free(temp->nomeapresentador);
         free(temp);
     }
+}
+
+
+
+//==============================================================================================
+int validarTipoCategoria(const char* tipo){
+    const char* tipos_validos[] = {"notícias", "esporte", "entretenimento"};
+    int num_tipos = 3;
+    int valido = 0;
+    for (int i = 0; i < num_tipos; i++) {
+        if (strcasecmp(tipo, tipos_validos[i]) == 0) {
+            valido = 1;
+        }
+    }
+    return valido;
+}
+
+int validarPeriodicidade(const char* periodicidade){
+    if(!periodicidade || strlen(periodicidade) == 0) {
+        return 0;
+    }
+    
+    char copy[50];
+    strncpy(copy, periodicidade, sizeof(copy)-1);
+    copy[sizeof(copy)-1] = '\0';
+    
+    // Converter para minúsculas
+    for(int i = 0; copy[i]; i++){
+        copy[i] = tolower(copy[i]);
+    }
+    
+    // 1. DIÁRIO
+    if(strcmp(copy, "diário") == 0 || strcmp(copy, "diario") == 0){
+        return 1;
+    }
+    
+    // 2. SEMANAL
+    if(strstr(copy, "semanal-") != NULL) {
+        char *dias = copy + 8; 
+        if(strlen(dias) == 0){
+            return 0; // sem dias especificados
+        }
+        
+        // Validar cada dia da semana
+        char *token = strtok(dias, "-");
+        while(token != NULL) {
+            if(!validarDiaSemana(token)) {
+                return 0; // dia inválido
+            }
+            token = strtok(NULL, "-");
+        }
+        return 1; // todos os dias são válidos
+    }
+    
+    return 0; // formato não reconhecido
+}
+
+int validarDiaSemana(const char* dia) {
+    const char* dias_validos[] = {"segunda", "terca", "quarta", "quinta", "sexta", "sabado", "domingo"};
+    int valido = 0;
+    for(int i = 0; i < 7; i++) {
+        if(strcmp(dia, dias_validos[i]) == 0){
+            valido = 1;
+        }
+    }
+    return valido;
+}
+
+int validarTipoPrograma(const char* tipo) {
+    const char* tipos_validos[] = {"ao vivo", "sob demanda"};
+    int num_tipos = 2;
+    int valido = 0;
+    for (int i = 0; i < num_tipos; i++) {
+        if (strcasecmp(tipo, tipos_validos[i]) == 0) {
+            valido = 1;
+        }
+    }
+    return valido;
+}
+
+int validarURL(const char* url) {
+    int valido = 1;
+    if (!url || strlen(url) < 10){// Mínimo: "http://a.b"
+        valido = 0; 
+    }
+    else{
+        // Verifica se começa com http:// ou https://
+        int is_http = (strncmp(url, "http://", 7) == 0);
+        int is_https = (strncmp(url, "https://", 8) == 0);
+        if(!is_http && !is_https){
+            valido = 0;
+        }
+        else{
+            // Pega o domínio (pós ://)
+            const char* dominio = strstr(url, "://");
+            if(!dominio){
+                valido = 0;
+            }
+            else{
+                dominio += 3;  // Pula "://"
+                // Verifica se o domínio não está vazio
+                if(strlen(dominio) == 0){
+                    valido = 0;
+                }
+                // Verifica se não há espaços
+                else if(strchr(url, ' ')){
+                    valido = 0;
+                }
+            }
+        }
+    }
+    return valido;
+}
+
+int validarFormatoHorario(const char* horario) {
+    int valido = 1;
+    if (horario == NULL || strlen(horario) != 5) {
+        valido = 0;
+    }
+    else{
+        if (horario[2] != ':') {
+            valido = 0;
+        }
+        else{
+            for (int i = 0; i < 5; i++) {
+                if (i != 2) { 
+                    if (horario[i] < '0' || horario[i] > '9') {
+                        valido = 0;
+                    }
+                }
+            }
+            if(valido){
+                int horas = (horario[0] - '0') * 10 + (horario[1] - '0');
+                int minutos = (horario[3] - '0') * 10 + (horario[4] - '0');
+                if (horas < 0 || horas > 23) {
+                    valido = 0;
+                }
+                else if (minutos < 0 || minutos > 59) {
+                    valido = 0;
+                }
+            }
+        }
+    }
+    
+    return valido;
+}
+
+int validarDuracao(const char* duracao) {
+    int valido = 0;
+    if (validarFormatoHorario(duracao)) {
+        int horas = (duracao[0] - '0') * 10 + (duracao[1] - '0');
+        int minutos = (duracao[3] - '0') * 10 + (duracao[4] - '0');
+        if (horas >= 0 && horas <= 99 && minutos >= 0 && minutos <= 59) {
+            valido = 1;
+        }
+    }
+    return valido;
+}
+
+void mostrarDadosPrograma(Programas* programa) {
+    if(programa) {
+        printf("=== DADOS DO PROGRAMA ===\n");
+        printf("Nome: %s\n", programa->nomeprograma);
+        printf("Tipo: %s\n", programa->tipo);
+        printf("Início: %s\n", programa->inicio);
+        printf("Duração: %s\n", programa->duracao);
+        printf("Periodicidade: %s\n", programa->periodicidade);
+        printf("Apresentador: %s\n", programa->apresentador->nomeapresentador);
+        printf("Stream: %s\n", programa->apresentador->streamatual->nomestream);
+        printf("Categoria: %s\n", programa->apresentador->categoria->nomecategoria);
+    }
+}
+
+void mostrarProgramasStreamDiaHorario(Stream* stream, const char* dia, const char* horario) {
+    if (!stream || !stream->categoria) {
+        printf("Stream não encontrada ou sem categorias.\n");
+        return;
+    }
+    
+    printf("Programas da stream '%s' no dia %s às %s:\n", stream->nomestream, dia, horario);
+    int encontrou = 0;
+    Categorias* cat_atual = stream->categoria;
+    
+    // Percorre todas as categorias da stream
+    do {
+        if (cat_atual->programas) {
+            // Função auxiliar para percorrer a árvore de programas
+            percorrerProgramasDiaHorario(cat_atual->programas, dia, horario, &encontrou);
+        }
+        cat_atual = cat_atual->prox;
+    }while(cat_atual != stream->categoria);
+    
+    if(!encontrou){
+        printf("Nenhum programa encontrado para os critérios especificados.\n");
+    }
+}
+
+// Função auxiliar para percorrer a árvore de programas
+void percorrerProgramasDiaHorario(Programas* raiz, const char* dia, const char* horario, int* encontrou) {
+    if (raiz) {
+        percorrerProgramasDiaHorario(raiz->esquerda, dia, horario, encontrou);
+        
+        if (programaAconteceNoDia(raiz, dia) && 
+            validarFormatoHorario(horario) && 
+            strcmp(raiz->inicio, horario) == 0) {
+            
+            printf("• %s | Categoria: %s | Apresentador: %s\n",
+                   raiz->nomeprograma,
+                   raiz->apresentador->categoria->nomecategoria,
+                   raiz->apresentador->nomeapresentador);
+            *encontrou = 1;
+        }
+        
+        percorrerProgramasDiaHorario(raiz->direita, dia, horario, encontrou);
+    }
+}
+
+
+void mostrarProgramasPorDiaSemana(Programas* raiz, const char* dia) {
+    if(raiz) {
+        mostrarProgramasPorDiaSemana(raiz->esquerda, dia);        
+        if(programaAconteceNoDia(raiz, dia)) {
+            printf("Programa: %s | Horário: %s | Periodicidade: %s\n", 
+                   raiz->nomeprograma, raiz->inicio, raiz->periodicidade);
+        }        
+        mostrarProgramasPorDiaSemana(raiz->direita, dia);
+    }
+}
+
+// FUNÇÃO AUXILIAR: Verificar se programa acontece no dia
+int programaAconteceNoDia(Programas* prog, const char* dia) {
+    int result = 0;
+    if(prog && prog->periodicidade && dia){
+        char periodicidade_copy[100];
+        char dia_lower[50];
+        strncpy(periodicidade_copy, prog->periodicidade, sizeof(periodicidade_copy)-1);
+        periodicidade_copy[sizeof(periodicidade_copy)-1] = '\0';
+        strncpy(dia_lower, dia, sizeof(dia_lower)-1);
+        dia_lower[sizeof(dia_lower)-1] = '\0';
+
+        for(int i = 0; periodicidade_copy[i]; i++) {
+            periodicidade_copy[i] = tolower(periodicidade_copy[i]);
+        }
+        for(int i = 0; dia_lower[i]; i++) {
+            dia_lower[i] = tolower(dia_lower[i]);
+        }
+        
+        if(strcmp(periodicidade_copy, "diário") == 0 || strcmp(periodicidade_copy, "diario") == 0) {
+            result = 1;
+        }        
+        else if(strstr(periodicidade_copy, "semanal-") != NULL) {
+            char *dias_semana = periodicidade_copy + 8;
+            char padrao[60];
+            snprintf(padrao, sizeof(padrao), "-%s-", dia_lower);
+            if (strstr(dias_semana, padrao) != NULL) {
+                result = 1;
+            }
+            else if (strncmp(dias_semana, dia_lower, strlen(dia_lower)) == 0 && 
+                    (dias_semana[strlen(dia_lower)] == '-' || dias_semana[strlen(dia_lower)] == '\0')) {
+                result = 1;
+            }
+            else if (strstr(dias_semana, "-") != NULL) {
+                char *ultimo_dia = strrchr(dias_semana, '-') + 1;
+                if (strcmp(ultimo_dia, dia_lower) == 0) {
+                    result = 1;
+                }
+            }
+            else if (strcmp(dias_semana, dia_lower) == 0) {
+                result = 1;
+            }
+        }
+    }
+    return result;
 }
