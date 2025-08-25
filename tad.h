@@ -79,7 +79,7 @@ int apresentadorTemProgramaNosProgramas(Programas* prog, Apresentadores* apresen
 int apresentadorTemProgramaNaStream(Categorias* cat, Apresentadores* apresentador);
 int validarAssociacao(Stream* stream, Apresentadores* apresentador );
 void adicionarHistorico(Apresentadores* apresentador, const char* nomestream);
-void Associar_Stream(Stream* stream, Apresentadores* apresentador, Categorias* novaCategoria);
+void Associar_Stre2am(Stream* stream, Apresentadores* apresentador, Categorias* novaCategoria);
 void libera_Programa(Programas* raiz);
 void libera_Categoria(Categorias* lista); 
 void libera_Stream(Stream* raiz);

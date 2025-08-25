@@ -11,7 +11,7 @@ void mostra_Stream(Stream* raiz){
 }
 
 void FiltraStreamsporCategoria(Stream* raiz, char* categoria,int* flag){
-    /*A função recebe como parâmetro a raiz para uma árvore de streams o nome de uma categoria e a posição de memoria de uma flag ela percorre recursivamente a árvore
+    /*A função recebe como parâmetro a raiz para uma árvore de streams o nome de uma categoria e a posição de memoria de uma flag, ela percorre recursivamente a árvore
      verificando se na lista de categorias de cada stream existe uma categoria com o nome informado pelo usuário exibindo o nome da stream caso a categoria exista nela
       e atualizando a flag para sinalizar que pelo menos uma das streams possui a categoria informada*/
     if(raiz){
@@ -73,13 +73,10 @@ void ExibeApresentadoresDeUmaStream (Apresentadores*lista, char* nomeStream,int*
 Stream* Cadastra_stream(Stream* raiz, char* nome, char* site){
     /*Recebe como parâmetro a raiz da árvore de streams o nome da nova stream e o site dela, a função  percorre recursivamente a árvore comparando o nome da nova stream com o nome da stream do nó que foi passado como parametro
       na chamada da função para definir se a função vai ser chamada para a subarvore à esquerda da raiz atual ou à direita da raiz atual até chegar em um valor NULL que
-      seria o fim daquele galho da àrvore cria o novo nó e e atribui ele a raiz no fim a função retorna raiz o que garente que novo no seja alocado como filho da raiz da função*/
-    if (!validarURL(site)) {
-        printf("ERRO: URL inválida! Deve começar com http:// ou https:// e ter formato válido.\n");
-        printf("Exemplos válidos: https://www.exemplo.com ou http://stream.com\n");
-        return raiz;
-    }
-    if(!raiz){
+      seria o fim daquele galho da àrvore, cria o novo nó e  atribui ele a raiz no fim a função retorna raiz o que garente que novo no seja alocado como filho da raiz da função*/
+
+    if(validarURL(site)){
+        if(!raiz){
         Stream* novo = (Stream*) malloc(sizeof(Stream));
         if(novo){
             novo->nomestream = strdup(nome);
@@ -104,12 +101,17 @@ Stream* Cadastra_stream(Stream* raiz, char* nome, char* site){
             printf("Já existe uma Stream de nome '%s' cadastrada.\n", nome);
         }
     }
+    }else{
+        printf("ERRO: URL inválida! Deve começar com http:// ou https:// e ter formato válido.\n");
+        printf("Exemplos válidos: https://www.exemplo.com ou http://stream.com\n");
+    }
+    
     return raiz;
 }
 
 Stream* busca_Stream(Stream* raiz, char* nome) {
-    /*A função recebe a raiz da árvore de Streams e o nome da stream a ser procurada o ponteiro aux é iniciado com NULL para que a função retorne NULL caso ela chegue
-     ao último filho do galho, onde ela procura pela stream, e mesmo assim não tenha encontrado a stream a variável cmp guarda o resultado da comparão do nome informado 
+    /*A função recebe a raiz da árvore de Streams e o nome da stream a ser procurada, o ponteiro aux é iniciado com NULL para que a função retorne NULL, caso ela chegue
+     ao último filho do galho, onde ela procura pela stream, e mesmo assim não tenha encontrado a stream a variável cmp guarda o resultado da comparação do nome informado 
      com o nome da raiz atual se for zero significa que são iguais e a stream foi encontrada se for menor que zero significa que o nome informado vem antes do nome da 
      stream em ordem alfabética e por isso a função é chamada para a subárvore da esquerda  e se for maior significa que vem depois por isso a função é chamada para a 
      subárvore da direita*/
@@ -130,52 +132,54 @@ Stream* busca_Stream(Stream* raiz, char* nome) {
 }
 
 Categorias* Cadastra_Categoria(Categorias* lista, char* nome, char* tipo) {
-    /*A fução recebe a lista de categorias de uma stream o nome da nova categoria e o tipo dela cria um novo no do tipo categoria e o preenche e o coloca na lista
+    /*A fução recebe a lista de categorias de uma stream,o nome da nova categoria e o tipo dela, cria um novo no do tipo categoria e o preenche e o coloca na lista
      de categorias em ordem alfabetica retornando o inicio da lista já atualizada*/
-    if(!validarTipoCategoria(tipo)){
-        printf("ERRO: Tipo de categoria inválido! Use: notícias, esporte ou entretenimento\n");
-        return lista;
-    }
-    Categorias* novo = (Categorias*) malloc(sizeof(Categorias));
-    novo->nomecategoria = strdup(nome);
-    novo->tipo = strdup(tipo);
-    novo->programas = NULL;
-    if (lista) {// Se a lista não é vazia
-        Categorias* atual = lista;
-        if (strcmp(nome, lista->nomecategoria) < 0){//Se o nome da nova categoria vem antes do nome do primeiro no da lista na ordem alfabética o novo no é colocado no inicio da lista atualizado os ponteiros.
-            while (atual->prox != lista) {
-                atual = atual->prox;
-            }
-            atual->prox = novo;
-            novo->prox = lista;
-            lista = novo;
-        }
-        else {// se a nova categoria não entrar no começo da lista
-            while (atual->prox != lista && strcmp(atual->prox->nomecategoria, nome) < 0) {//Percorre a lista até encontrar um programa que vem depois do novo na ordem alfabética ou até chgar ao último nóda lista
-                atual = atual->prox;
-            }
-            if (strcmp(atual->prox->nomecategoria, nome) == 0) {//Verifica se já existe uma categoria com o mesmo nome
-                printf("Já existe uma categoria com o nome %s cadastrada.\n", nome);
-                free(novo->nomecategoria);
-                free(novo->tipo);
-                free(novo);
-            }
-            else {//se não existe categoria com o mesmo nome os ponteiros são  atualizados encaixando o novo no na lista de forma ordenada
-                novo->prox = atual->prox;
+
+    if (validarTipoCategoria(tipo))
+    {
+        Categorias* novo = (Categorias*) malloc(sizeof(Categorias));
+        novo->nomecategoria = strdup(nome);
+        novo->tipo = strdup(tipo);
+        novo->programas = NULL;
+        if (lista) {// Se a lista não é vazia
+            Categorias* atual = lista;
+            if (strcmp(nome, lista->nomecategoria) < 0){//Se o nome da nova categoria vem antes do nome do primeiro no da lista na ordem alfabética o novo no é colocado no inicio da lista atualizado os ponteiros.
+                while (atual->prox != lista) {
+                    atual = atual->prox;
+                }
                 atual->prox = novo;
+                novo->prox = lista;
+                lista = novo;
             }
-        }
-    } 
-    else {//Se a lista estiver vazia o novo no aponta para si mesmo e lista tera apenas o novo no
-        novo->prox = novo;
-        lista = novo;
+            else {// se a nova categoria não entrar no começo da lista
+                while (atual->prox != lista && strcmp(atual->prox->nomecategoria, nome) < 0) {//Percorre a lista até encontrar um programa que vem depois do novo na ordem alfabética ou até chegar ao último nó da lista
+                    atual = atual->prox;
+                }
+                if (strcmp(atual->prox->nomecategoria, nome) == 0) {//Verifica se já existe uma categoria com o mesmo nome
+                    printf("Já existe uma categoria com o nome %s cadastrada.\n", nome);
+                    free(novo->nomecategoria);
+                    free(novo->tipo);
+                    free(novo);
+                }
+                else {//se não existe categoria com o mesmo nome os ponteiros são  atualizados encaixando o novo no na lista de forma ordenada
+                    novo->prox = atual->prox;
+                    atual->prox = novo;
+                }
+            }
+        } 
+        else {//Se a lista estiver vazia o novo no aponta para si mesmo e lista tera apenas o novo no
+            novo->prox = novo;
+            lista = novo;
+    }
+    }else{
+        printf("ERRO: Tipo de categoria inválido! Use: notícias, esporte ou entretenimento\n");
     }
     return lista;
 }
 
 
 Categorias* busca_Categorias(Categorias* lista, char* nome){
-    /*A função  recebe uma lista de  Categorias de uma determinada Stream e o nome da categoria a ser buscada percorre a lista procurando pelacategoria
+    /*A função  recebe uma lista de  Categorias de uma determinada Stream e o nome da categoria a ser buscada percorre a lista procurando pela categoria
      se encontrar retorna a posição de memória da categoria buscada se não encontrar retorna NULL*/
     Categorias* resultado = NULL; 
     Categorias* atual = lista;
@@ -221,8 +225,8 @@ void ExibeApresentadoresPorCategoria(Apresentadores* lista, char* categoria) {
 
 
 Apresentadores* criar_Apresentador(const char* nome, Stream* streamAtual, Categorias* categoria){
-    /*A função recebe como parametro o nome do apresentado o ponteiro para a stream em que ele será cadastrado e um para a categoria
-     em que ele será cadastrado e retorna o ponteiro do novo apresentador ou NULL em caso de erro de alocação*/
+    /*A função recebe como parametro o nome do apresentador, o ponteiro para a stream em que ele será cadastrado e um para a categoria
+     em que ele será cadastrado, e retorna o ponteiro do novo apresentador ou NULL em caso de erro de alocação*/
     Apresentadores* novo = malloc(sizeof(Apresentadores));
     if(!novo) {
         printf("Erro de alocacao.\n");
@@ -400,19 +404,19 @@ void lerDadosPrograma(char* periodicidade, char* duracao, char* inicio, char* ti
 Programas* criarPrograma(const char* nome, const char* periodicidade, const char* duracao, const char* inicio, const char* tipo, Apresentadores* apresentador) {
     /*A função recebe como parâmetro os dados do programa que será criado e o poteiro para o apresentador do programa e retorna a posição de memória do novo programa ou NULL no caso de erro de alocação*/
     Programas* novo = malloc(sizeof(Programas));
-    if(!novo) {
+    if(novo) {
+        novo->nomeprograma = strdup(nome);
+        novo->periodicidade = strdup(periodicidade);
+        novo->duracao = strdup(duracao);
+        novo->inicio = strdup(inicio);
+        novo->tipo = strdup(tipo);
+        novo->apresentador = apresentador;
+        novo->esquerda = novo->direita = NULL;
+        return novo;
+    }else{
         printf("Erro de alocacao.\n");
-        return NULL;
     }
-    //copia os dados do programa alocando o espaço necessário para as strings e  inicializa os ponteiros corretamente
-    novo->nomeprograma = strdup(nome);
-    novo->periodicidade = strdup(periodicidade);
-    novo->duracao = strdup(duracao);
-    novo->inicio = strdup(inicio);
-    novo->tipo = strdup(tipo);
-    novo->apresentador = apresentador;
-    novo->esquerda = novo->direita = NULL;
-    return novo;
+
 }
 
 Apresentadores* validarApresentador(const char* nome, Apresentadores* lista, Stream* stream, Categorias* categoria) {
