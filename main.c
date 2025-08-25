@@ -13,7 +13,8 @@ Apresentadores* menu_Programas(Programas** raiz,Apresentadores* lista,Stream* st
         printf("2- Listar Programas.\n");
         printf("3- Buscar Programa.\n");
         printf("4- Excluir programa.\n");
-        printf("5- Sair");
+        printf("5- Programas por Dia.\n");
+        printf("6- Voltar.\n");
         scanf("%d", &op);
         getchar();
         switch(op){
@@ -48,8 +49,7 @@ Apresentadores* menu_Programas(Programas** raiz,Apresentadores* lista,Stream* st
                     printf("Programa não encontrado.\n");
                 }
                 else{
-                    printf("Nome:%s\n", result->nomeprograma);
-                    printf("Tipo:%s\n", result->tipo);
+                    mostrarDadosPrograma(result);
                 }
                 break;
             }
@@ -68,14 +68,23 @@ Apresentadores* menu_Programas(Programas** raiz,Apresentadores* lista,Stream* st
     
                 break;
             }
-            case 5:
+            case 5: {
+                char dia[20];
+                printf("Informe o dia da semana: ");
+                scanf("%19[^\n]", dia);
+                getchar();
+                printf("Programas no dia %s:\n", dia);
+                mostrarProgramasPorDiaSemana((*raiz), dia);
+                break;
+            }
+            case 6:
                 printf("Voltando...\n");
                 break;
             default:
                 printf("Voce digitou um caractere invalido.\n");
                 break;
         }
-    }while(op!=5);
+    }while(op!=6);
     return lista;
 }
 
@@ -88,7 +97,7 @@ Apresentadores* menu_Categorias(Categorias** raiz,Apresentadores* lista,Stream* 
         printf("3- Buscar Categorias.\n");
         printf("4- Acessar Categorias.\n");
         printf("5- Excluir categoria.\n");
-        printf("6- Sair.\n");
+        printf("6- Voltar.\n");
         scanf("%d", &op);
         getchar();
         switch(op){
@@ -97,7 +106,7 @@ Apresentadores* menu_Categorias(Categorias** raiz,Apresentadores* lista,Stream* 
                 printf("Informe o nome da categoria.\n");
                 scanf("%49[^\n]", nome);
                 getchar();
-                printf("Informe o tipo da categoria.\n");
+                printf("Informe o tipo da categoria (notícias/esporte/entretenimento):\n");
                 scanf("%49[^\n]", categoria);
                 getchar();
                 (*raiz) = Cadastra_Categoria((*raiz),nome,categoria);
@@ -165,11 +174,15 @@ Apresentadores* menu_Stream(Stream** raiz, Apresentadores* lista){
 
     do{
         printf("Menu\n");
-        printf("1-Cadastrar Stream\n");
+        printf("1- Cadastrar Stream\n");
         printf("2- Buscar Stream\n");
         printf("3- listar stream\n");
         printf("4- Editar Categorias.\n");
-        printf("5- Sair.\n");
+        printf("5- filtrar streams por  categoria.\n");
+        printf("6- filtrar streams por  Tipo.\n");
+        printf("7- Exibir apresentadores da Stream.\n");
+        printf("8- Programas por Dia e Horário em Stream.\n");
+        printf("9- Voltar.\n");
         scanf("%d", &op);
         getchar();
         switch(op){
@@ -179,7 +192,7 @@ Apresentadores* menu_Stream(Stream** raiz, Apresentadores* lista){
                 printf("Informe o nome da stream.\n");
                 scanf("%49[^\n]", nome);
                 getchar();
-                printf("Informe o site da stream.\n");
+                printf("Informe o site da stream (ex: https://www.exemplo.com):\n");
                 scanf("%49[^\n]", site);
                 getchar();
                 (*raiz) = Cadastra_stream((*raiz),nome,site);
@@ -220,14 +233,71 @@ Apresentadores* menu_Stream(Stream** raiz, Apresentadores* lista){
                 }
                 break;
                 }
-            case 5:
-                printf("Encerrando...\n");
+            case 5:{
+                char categoria[50];
+                int flag = 0;
+                printf("Informe o nome da categoria:\n");
+                scanf("%49[^\n]", categoria);
+                printf("Streams que possuem a categoria %s:\n", categoria);
+                FiltraStreamsporCategoria((*raiz), categoria,&flag);
+                if(!flag){
+                    printf("Não existe nenhuma stream com a categoria %s.\n", categoria);
+                }
+                break;
+                }
+            case 6:{
+                char tipo[50];
+                int flag = 0;
+                printf("Informe o tipo da categoria:\n");
+                scanf("%49[^\n]", tipo);
+                printf("Streams que possuem categorias do tipo %s:\n", tipo);
+                FiltraStreamsporTipo((*raiz), tipo,&flag);
+                if(!flag){
+                    printf("Não existe nenhuma stream com categorias desse tipo %s.\n", tipo);
+                }
+                break;
+                }
+            case 7:{
+                int flag = 0;
+                char stream[50];
+                printf("Informe o nome da Stream.\n");
+                scanf("%49[^\n]", stream);
+                ExibeApresentadoresDeUmaStream(lista,stream,&flag);
+                if(!flag){
+                    printf("A stream não possui apresentadores cadastrados.\n");
+                }
+            }
+                break;
+            case 8: {
+            char nomeStream[50], dia[20], horario[10];
+            printf("Informe o nome da Stream: ");
+            scanf("%49[^\n]", nomeStream);
+            getchar();
+            
+            printf("Informe o dia da semana: ");
+            scanf("%19[^\n]", dia);
+            getchar();
+            
+            printf("Informe o horário (HH:MM): ");
+            scanf("%9[^\n]", horario);
+            getchar();
+            
+            Stream* stream = busca_Stream(*raiz, nomeStream);
+            if (stream) {
+                mostrarProgramasStreamDiaHorario(stream, dia, horario);
+            } else {
+                printf("Stream não encontrada.\n");
+            }
+            break;
+            }
+            case 9:
+                printf("Voltando...\n");
                 break;
             default:
                 printf("Você digitou um caractere inválido.\n");
                 break;
         }
-    }while(op!=5);
+    }while(op!=9);
     return lista;
 }
 
@@ -238,8 +308,9 @@ Apresentadores* menu_Apresentador(Apresentadores* lista, Stream* raiz){
         printf("1- Cadastrar Apresentador.\n");
         printf("2- Listar Apresentadores\n");
         printf("3- Associar a uma Stream\n");
-        printf("4-Histórico do apresentador.\n");
-        printf("5- Sair\n");
+        printf("4- Histórico do apresentador.\n");
+        printf("5- Filtrar Apresentadores por categoria.\n");
+        printf("6- Voltar\n");
         scanf("%d", &op);
         getchar();
         switch(op){
@@ -297,7 +368,15 @@ Apresentadores* menu_Apresentador(Apresentadores* lista, Stream* raiz){
                 }
                 break;
             }
-            case 5:
+            case 5:{
+                char categoria[50];
+                printf("Informe o nome da categoria:\n");
+                scanf("%49[^\n]", categoria);
+                printf("Apresentadores que possuem a categoria %s:\n", categoria);
+                ExibeApresentadoresPorCategoria(lista, categoria);
+                break;
+                }
+            case 6:
                 printf("Voltando...\n");
                 break;
             default:
@@ -305,7 +384,7 @@ Apresentadores* menu_Apresentador(Apresentadores* lista, Stream* raiz){
                 break;
                 
         }
-    }while(op!=5);
+    }while(op!=6);
     return lista;
 }
 

@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <time.h>
+#include <ctype.h>
+#include <string.h>
 
 typedef struct Historico{
     char* nomestream;
@@ -11,7 +12,7 @@ typedef struct Historico{
 }Historico;
 
 typedef struct Categorias{
-    char* tipo;
+    char* tipo; 
     char* nomecategoria;
     struct Categorias* prox;
     struct Programas* programas;
@@ -46,11 +47,15 @@ typedef struct Programas{
 }Programas;
 
 void mostra_Stream(Stream* raiz);
+void FiltraStreamsporCategoria(Stream* raiz, char* nome,int* flag);
+void FiltraStreamsporTipo(Stream* raiz, char* tipo,int* flag);
+void ExibeApresentadoresDeUmaStream (Apresentadores*lista, char* nomeStream,int* flag);
 Stream* Cadastra_stream(Stream* raiz, char* nome, char* site);
 Stream* busca_Stream(Stream* raiz, char* nome);
 Categorias* Cadastra_Categoria(Categorias* lista, char* nome, char* tipo);
 Categorias* busca_Categorias(Categorias* lista, char* nome);
 void mostra_Categoria(Categorias* lista);
+void ExibeApresentadoresPorCategoria(Apresentadores* lista, char* categoria);
 Apresentadores* criar_Apresentador(const char* nome, Stream* streamAtual, Categorias* categoria);
 Apresentadores* inserir_Apresentador(Apresentadores* lista, Apresentadores* novo);
 Apresentadores* cadastrar_Apresentador(Apresentadores* lista, Stream* raizStreams);
@@ -80,3 +85,16 @@ void libera_Categoria(Categorias* lista);
 void libera_Stream(Stream* raiz);
 void libera_Historico(Historico* lista);
 void libera_apresentadores(Apresentadores* lista);
+int validarTipoCategoria(const char* tipo);
+int validarPeriodicidade(const char* periodicidade);
+int validarDiaSemana(const char* dia);
+int validarTipoPrograma(const char* tipo);
+int validarURL(const char* url);
+int validarFormatoHorario(const char* horario);
+int validarDuracao(const char* duracao);
+void mostrarProgramasStreamDiaHorario(Stream* stream, const char* dia, const char* horario);
+int programaAconteceNoDia(Programas* prog, const char* dia);
+void mostrarProgramasPorDiaSemana(Programas* raiz, const char* dia);
+void mostrarDadosPrograma(Programas* programa);
+void percorrerProgramasDiaHorario(Programas* raiz, const char* dia, const char* horario, int* encontrou);
+void mostrarDadosPrograma(Programas* programa);
