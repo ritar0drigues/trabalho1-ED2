@@ -19,7 +19,8 @@ Apresentadores* menu_Programas(Programas** raiz, Apresentadores* lista, Stream* 
         scanf("%d", &op);
         getchar();
 
-        switch (op) {
+        switch (op){
+            
             case 1: {
                 char nome[50];
                 printf("Informe o nome do programa: ");
@@ -29,12 +30,17 @@ Apresentadores* menu_Programas(Programas** raiz, Apresentadores* lista, Stream* 
                 if (busca_Programa((*raiz), nome) != NULL) {
                     printf("❌ ERRO: O programa '%s' já está cadastrado nesta categoria.\n", nome);
                 } else {
-                    (*raiz) = Cadastra_Programa((*raiz), nome, lista, stream, categoria);
-                    printf("✅ Programa '%s' cadastrado com sucesso!\n", nome);
+                    Programas* novo = Cadastra_Programa((*raiz), nome, lista, stream, categoria);
+                    if (novo != NULL) {
+                        (*raiz) = novo;
+                        printf("✅ Programa '%s' cadastrado com sucesso!\n", nome);
+                    } else {
+                        printf("❌ ERRO: Cadastro cancelado (apresentador não encontrado).\n");
+                    }
                 }
                 break;
             }
-
+    
             case 2:
                 if ((*raiz)) {
                     printf("\n📋 Lista de Programas:\n");
@@ -402,10 +408,14 @@ Apresentadores* menu_Apresentador(Apresentadores* lista, Stream* raiz) {
         getchar();
 
         switch (op) {
-            case 1:
-                lista = cadastrar_Apresentador(lista, raiz);
-                printf("✅ Apresentador cadastrado com sucesso!\n");
-                break;
+            case 1:{
+                Apresentadores* novaLista = cadastrar_Apresentador(lista, raiz);
+                if(novaLista != NULL){
+                    lista = novaLista;
+                    printf("✅ Apresentador cadastrado com sucesso!\n");
+                }
+            }
+            break;
 
             case 2:
                 if (lista == NULL) {
