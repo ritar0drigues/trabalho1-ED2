@@ -11,13 +11,13 @@ void mostra_Stream(Stream* raiz){
 
 int fatorBalanceamentostream(Stream* NO){
     int fb;
-    if((NO->direita==NULL) && (NO->esquerda!=NULL)){//Calcule o fp se o no da direita for NULL
+    if((NO->direita==NULL) && (NO->esquerda!=NULL)){//Calcule o fb se o no da direita for NULL
         fb = NO->esquerda->altura - (-1) ;
     }
-    else if(NO->esquerda==NULL && NO->direita!=NULL){//Calcule o fp se o no da esquerda for NULL
+    else if(NO->esquerda==NULL && NO->direita!=NULL){//Calcule o fb se o no da esquerda for NULL
         fb = (-1) - NO->direita->altura ;
     }
-    else if(NO->direita && NO->esquerda){//Calcula o fp se o nenhum dos filhos são NULL
+    else if(NO->direita && NO->esquerda){//Calcula o fb se o nenhum dos filhos são NULL
         fb = NO->esquerda->altura - NO->direita->altura;
     }
     else{//Se os dois filhos forem NULL o fb é zero
