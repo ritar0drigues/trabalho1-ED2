@@ -28,6 +28,7 @@ typedef struct Categorias{
 typedef struct Stream{
     char* nomestream;
     char* site;
+    int altura;
     Categorias* categoria;
     struct Stream* esquerda;
     struct Stream* direita;
@@ -51,6 +52,7 @@ typedef struct Programas{
     char* duracao;
     char* inicio;
     char* tipo;
+    int altura;
     Apresentadores* apresentador;
     struct Programas* direita;
     struct Programas* esquerda;
@@ -83,11 +85,19 @@ void libera_Categoria(Categorias* lista);
 //Programa
 void lerDadosPrograma(char* periodicidade, char* duracao, char* inicio, char* tipo, char* apresentador);
 Programas* criarPrograma(const char* nome, const char* periodicidade, const char* duracao, const char* inicio, const char* tipo, Apresentadores* apresentador);
+
+int fatorBalanceamentoPrograma(Programas* NO);  
+void rotacionar_Dir_Programa(Programas** raiz);
+void rotacionar_Esq_Programa(Programas** raiz);
+void BalanceamentoPrograma(Programas** NO);
+int So_um_filhopro(Programas* NO);
+void Atualiza_Alt_Programa(Programas** NO);
+
 void Cadastra_Programa(Programas** raiz,char* nome,Apresentadores* lista, Stream* stream, Categorias* categoria,int* flag,int* tem_prog);
 Programas* busca_Programa(Programas* raiz, char* nome);
 void mostra_Programa(Programas* raiz);
 void copiarDadosPrograma(Programas* destino, Programas* origem);
-Programas* maior_esquerda(Programas* Maior, Programas** Pai_Maior);
+void maior_esquerda(Programas* raiz, Programas** Maior, Programas** Pai_Maior);
 int eh_folha(Programas* no);
 int SotemUm_Filho(Programas* no, Programas** filho);
 void removePrograma(Programas** raiz, char* nomePrograma, int* achou);
@@ -98,7 +108,13 @@ void liberardadosPrograma(Programas* prog);
 
 //Stream
 void mostra_Stream(Stream* raiz);
-void Cadastra_stream(Stream** raiz, char* nome, char* site,int* flag);
+int fatorBalanceamentostream(Stream* NO);  
+void rotacionar_Dir_Stream(Stream** raiz);
+void rotacionar_Esq_Stream(Stream** raiz);
+void BalanceamentoStream(Stream** NO);
+int So_um_filho(Stream* NO);
+void Atualiza_Alt_Stream(Stream** NO);
+void Cadastra_StreamAVL(Stream** raiz, char* nome, char* site,int* flag);
 Stream* busca_Stream(Stream* raiz, char* nome);
 void FiltraStreamsporCategoria(Stream* raiz, char* nome,int* flag);
 void FiltraStreamsporTipo(Stream* raiz, char* tipo,int* flag);

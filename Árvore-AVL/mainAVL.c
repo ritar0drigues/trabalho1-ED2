@@ -1,4 +1,4 @@
-#include "tad.h"
+#include "tadAVL.h"
 
 
 void menu_Programas(Programas** raiz, Apresentadores** lista, Stream* stream, Categorias* categoria) {
@@ -261,7 +261,7 @@ void menu_Stream(Stream** raiz, Apresentadores** lista) {
                 }
                 else {
                     int flag = 0;
-                    Cadastra_stream(raiz, nome, site,&flag);
+                    Cadastra_StreamAVL(raiz, nome, site,&flag);
                     if (flag) {
                         printf("Já existe uma Stream de nome '%s' cadastrada.\n", nome);
                     }

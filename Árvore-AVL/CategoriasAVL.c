@@ -1,4 +1,4 @@
-#include "tad.h"
+#include "tadAVL.h"
 
 void Cadastra_Categoria(Categorias** lista, char* nome, char* tipo,int* cadastrou) {
     Categorias* novo = (Categorias*) malloc(sizeof(Categorias));

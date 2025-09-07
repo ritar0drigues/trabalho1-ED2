@@ -1,4 +1,4 @@
-#include "tad.h"
+#include "tadAVL.h"
 
 void lerDadosPrograma(char* periodicidade, char* duracao, char* inicio, char* tipo, char* apresentador) {
     int periodicidade_valida = 0;
@@ -71,10 +71,103 @@ Programas* criarPrograma(const char* nome, const char* periodicidade, const char
         novo->duracao = strdup(duracao);
         novo->inicio = strdup(inicio);
         novo->tipo = strdup(tipo);
+        novo->altura = 0;
         novo->apresentador = apresentador;
         novo->esquerda = novo->direita = NULL;
     }
     return novo;
+}
+
+int fatorBalanceamentoPrograma(Programas* NO){
+    int fb;
+    if(NO->direita==NULL && NO->esquerda!=NULL){//Calcule o fp se o no da direita for NULL
+        fb = NO->esquerda->altura - (-1) ;
+    }
+    else if(NO->esquerda==NULL && NO->direita!=NULL){//Calcula o fp se o no da esquerda for NULL
+        fb = (-1) - NO->direita->altura ;
+    }
+    else if(NO->direita && NO->esquerda){//Calcula o fp se o nenhum dos filhos são NULL
+        fb = NO->esquerda->altura - NO->direita->altura;
+    }
+    else{//Se os dois filhos forem NULL o fb é zero
+        fb = 0;
+    }
+    return fb;
+}
+
+int So_um_filhopro(Programas* NO){
+    int aux = 0;
+    if((NO->esquerda==NULL && NO->direita!=NULL) || (NO->esquerda!=NULL && NO->direita==NULL)){
+        aux = 1;
+    }
+    return aux;
+}
+
+void Atualiza_Alt_Programa(Programas** NO){
+    if(!((*NO)->esquerda)&& !((*NO)->direita)){//Se  o no é folha a altura é zero
+        (*NO)->altura = 0;
+    }
+    else if(So_um_filhopro((*NO))){ 
+        if((*NO)->direita){   //se o filho for o nó da direita
+            (*NO)->altura = (*NO)->direita->altura+1;
+        }    
+        else{   //se o filho for o nó da esquerda
+            (*NO)->altura = (*NO)->esquerda->altura+1;
+        }
+    }
+    else{  //Se o nó tem dois filhos
+        /*Verifica qual dos filhos é o mais alto e atribui a "alturadofilho+1" à altura do nó*/ 
+        if((*NO)->esquerda->altura > (*NO)->direita->altura){
+            (*NO)->altura = (*NO)->esquerda->altura+1;
+        }
+        else{
+            (*NO)->altura = (*NO)->direita->altura+1;
+        }
+    }
+}
+
+void rotacionar_Dir_Programa(Programas** raiz){
+    //Efetua a rotação
+    Programas* aux;
+    aux = (*raiz)->esquerda;
+    (*raiz)->esquerda = aux ->direita;
+    aux->direita = (*raiz);
+    (*raiz) = aux;
+    /*Atualiza a altura do nós rotacionados*/ 
+    Atualiza_Alt_Programa(&((*raiz)->direita));
+    Atualiza_Alt_Programa(raiz);
+}
+
+void rotacionar_Esq_Programa(Programas** raiz){
+    Programas* aux;
+    aux = (*raiz)->direita;
+    (*raiz)->direita = aux->esquerda;
+    aux->esquerda = (*raiz);
+    (*raiz) = aux;
+    /*Atualiza a altura do nós rotacionados*/ 
+    Atualiza_Alt_Programa(&((*raiz)->esquerda));
+    Atualiza_Alt_Programa(raiz);
+}
+
+void BalanceamentoPrograma(Programas** NO){
+    int fb;
+    fb = fatorBalanceamentoPrograma((*NO));
+    if(fb==2){
+        int fb_esq;
+        fb_esq = fatorBalanceamentoPrograma((*NO)->esquerda);
+        if(fb_esq<0){
+            rotacionar_Esq_Programa(&(*NO)->esquerda);
+        }
+        rotacionar_Dir_Programa(NO);
+    }
+    else if(fb==-2){
+        int fb_dir;
+        fb_dir = fatorBalanceamentoPrograma((*NO)->direita);
+        if(fb_dir>0){
+            rotacionar_Dir_Programa(&(*NO)->direita);
+        }
+        rotacionar_Esq_Programa(NO);
+    }
 }
 
 void Cadastra_Programa(Programas** raiz, char* nome, Apresentadores* lista, Stream* stream, Categorias* categoria,int* flag,int* tem_prog) {
@@ -90,6 +183,9 @@ void Cadastra_Programa(Programas** raiz, char* nome, Apresentadores* lista, Stre
         else{
             *tem_prog = 0;
         }
+        /*A função para atualizar altura e de balanceamento são chamadas como uma pendência garantindo que a altura e o balanceamento sejam calculados de baixo para cima*/
+        BalanceamentoPrograma(raiz);
+        Atualiza_Alt_Programa(raiz);
     }
     else{
         lerDadosPrograma(periodicidade, duracao, inicio, tipo, apresentadorNome);
@@ -123,6 +219,7 @@ void mostra_Programa(Programas* raiz){
     if(raiz){
         mostra_Programa(raiz->esquerda);
         printf("Nome: %s | Tipo: %s\n", raiz->nomeprograma, raiz->tipo);
+        printf("Altura:%d\n", raiz->altura);
         mostra_Programa(raiz->direita);
     }
 }
@@ -145,12 +242,23 @@ void copiarDadosPrograma(Programas* destino, Programas* origem) {
     }
 }
 
-Programas* maior_esquerda(Programas* Maior, Programas** Pai_Maior){
-    while (Maior->direita != NULL) {
-        *Pai_Maior = Maior;
-        Maior = Maior->direita;         
+
+void maior_esquerda(Programas* raiz, Programas** Maior, Programas** Pai_Maior){
+    if(raiz->direita){
+        maior_esquerda(raiz->direita,Maior,Pai_Maior);
+        (*Pai_Maior) = raiz;
+        /*A função para atualizar altura é chamada como uma pendência garantindo que a altura seja calculada de baixo para cima*/
+        BalanceamentoPrograma(&raiz);
+        Atualiza_Alt_Programa(&raiz);
     }
-    return Maior;
+    else{
+        *Maior = raiz;
+         /*Já que esse nó "Maior" será removido e tabém já que esse é o Maior da esquerda já sebemos que a direita dele é NULL ou seja a altura do
+          Maior é necessáriamente a altura da esquerda +1 o que obviamente significa que a altura do no da esquerda do Maior é a altura do maior-1 então subtrai-se um da 
+          altura do NO maior e ele vai guardar a mesma altura do no a esquerda dele assim quanda a pilha de recursão for sendo desfeita cada nó 
+          que está acima do nó removido tera sua altura calculada da maneira correta*/
+        (*Maior)->altura -=1; 
+    }
 }
 
 int eh_folha(Programas* no){
@@ -188,7 +296,7 @@ void removePrograma(Programas** raiz, char* nomePrograma, int* achou){
                 }
                 else{
                     Pai_Maior = NULL;
-                    No_maior = maior_esquerda(*raiz,&Pai_Maior);
+                    maior_esquerda((*raiz)->esquerda,&No_maior,&Pai_Maior);
                     copiarDadosPrograma((*raiz),No_maior);
                     if (Pai_Maior == NULL){
                         (*raiz)->esquerda = No_maior->esquerda;
@@ -199,7 +307,7 @@ void removePrograma(Programas** raiz, char* nomePrograma, int* achou){
                     aux = No_maior;
                 }
             }
-            liberardadosPrograma(aux);
+            liberardadosPrograma(aux); 
         }
         else if(strcmp(nomePrograma, (*raiz)->nomeprograma)<0){
             removePrograma(&(*raiz)->esquerda,nomePrograma,achou);
@@ -207,6 +315,10 @@ void removePrograma(Programas** raiz, char* nomePrograma, int* achou){
         else{
             removePrograma(&(*raiz)->direita,nomePrograma,achou);
         }
+        /*A função para atualizar altura e de balanceamento são chamadas como uma pendência garantindo que a altura e o balanceamento sejam calculados de baixo para cima*/
+        BalanceamentoPrograma(raiz);
+        Atualiza_Alt_Programa(raiz);
+
     }
 }
  

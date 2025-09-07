@@ -1,4 +1,4 @@
-#include "tad.h"
+#include "tadAVL.h"
 
 int validarAssociacao(Stream* stream, Apresentadores* apresentador){
     int aux = 1;
