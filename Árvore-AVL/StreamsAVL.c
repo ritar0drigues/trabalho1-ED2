@@ -131,7 +131,7 @@ void Cadastra_StreamAVL(Stream** raiz, char* nome, char* site,int *flag){
         }
 }
 
-Stream* busca_Stream(Stream* raiz, char* nome) {
+Stream* busca_Stream(Stream* raiz, char* nome){
     Stream* aux = NULL;
     if (raiz){
         int cmp = strcmp(nome, raiz->nomestream);

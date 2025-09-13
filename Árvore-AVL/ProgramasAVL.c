@@ -170,15 +170,13 @@ void BalanceamentoPrograma(Programas** NO){
     }
 }
 
-void Cadastra_Programa(Programas** raiz, char* nome, Apresentadores* lista, Stream* stream, Categorias* categoria,int* flag,int* tem_prog) {
-    char periodicidade[50], duracao[50], inicio[50], tipo[50], apresentadorNome[50];
-
+void Cadastra_Programa(Programas** raiz, char* nome, Apresentadores* lista, Stream* stream, Categorias* categoria,int* flag,int* tem_prog,char* periodicidade, char* duracao, char* inicio, char* tipo, const char* apresentadorNome) {
     if((*raiz)){
         if(strcasecmp(nome, (*raiz)->nomeprograma) < 0){
-            Cadastra_Programa(&(*raiz)->esquerda, nome, lista, stream, categoria,flag,tem_prog);
+            Cadastra_Programa(&(*raiz)->esquerda, nome, lista, stream, categoria,flag,tem_prog,periodicidade, duracao, inicio, tipo, apresentadorNome);
         } 
         else if(strcasecmp(nome, (*raiz)->nomeprograma) > 0){
-            Cadastra_Programa(&(*raiz)->direita, nome, lista, stream, categoria,flag,tem_prog);
+            Cadastra_Programa(&(*raiz)->direita, nome, lista, stream, categoria,flag,tem_prog,periodicidade, duracao, inicio, tipo, apresentadorNome);
         } 
         else{
             *tem_prog = 0;
@@ -188,7 +186,6 @@ void Cadastra_Programa(Programas** raiz, char* nome, Apresentadores* lista, Stre
         Atualiza_Alt_Programa(raiz);
     }
     else{
-        lerDadosPrograma(periodicidade, duracao, inicio, tipo, apresentadorNome);
         Apresentadores* apresentador = validarApresentador(apresentadorNome, lista, stream, categoria);/*Verifica se a Stream e a Categoria do programa são as mesmas do apresentador*/
         if(apresentador){
             (*raiz) = criarPrograma(nome, periodicidade, duracao, inicio, tipo, apresentador);

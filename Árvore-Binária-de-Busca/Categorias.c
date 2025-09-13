@@ -8,7 +8,7 @@ void Cadastra_Categoria(Categorias** lista, char* nome, char* tipo,int* cadastro
     if ((*lista)){
         Categorias* atual = (*lista);
         /* Se o novo no vier antes do no "inicial" na ordem alfabética, o novo no se torna a referência para acessar a lista circular, "insere no inicio"*/
-        if (strcmp(nome, (*lista)->nomecategoria) < 0){
+        if (strcasecmp(nome, (*lista)->nomecategoria) < 0){
             while (atual->prox != (*lista)) {
                 atual = atual->prox;
             }
@@ -22,7 +22,7 @@ void Cadastra_Categoria(Categorias** lista, char* nome, char* tipo,int* cadastro
             while (atual->prox != (*lista) && strcasecmp(atual->prox->nomecategoria, nome) < 0){
                 atual = atual->prox;
             }
-            if(strcasecmp(atual->prox->nomecategoria, nome) == 0){///Verifica se já existe categoria com o mesmo nome
+            if(strcmp(atual->prox->nomecategoria, nome) == 0){///Verifica se já existe categoria com o mesmo nome
                 free(novo->nomecategoria);
                 free(novo->tipo);
                 free(novo);

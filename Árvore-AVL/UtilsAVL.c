@@ -20,7 +20,7 @@ int validarAssociacao(Stream* stream, Apresentadores* apresentador){
 }
 
 int validarTipoCategoria(const char* tipo){
-    const char* tipos_validos[] = {"notícias", "esporte", "entretenimento"};
+    const char* tipos_validos[] = {"esporte", "noticias", "entretenimento"};
     int num_tipos = 3;
     int valido = 0;
     for (int i = 0; i < num_tipos; i++) {
@@ -220,7 +220,7 @@ Apresentadores* validarApresentador(const char* nome, Apresentadores* lista, Str
         if (!pont->categoria || !pont->streamatual) {
             pont = NULL;
         } 
-        else if(strcmp(pont->categoria->nomecategoria, categoria->nomecategoria) != 0 || strcmp(pont->streamatual->nomestream, stream->nomestream) != 0) {
+        else if(strcmp(pont->categoria->nomecategoria, categoria->nomecategoria) != 0 || strcmp(pont->streamatual->nomestream, stream->nomestream) != 0 || apresentadorTemProgramaNaStream(categoria,pont)) {
             pont = NULL;
         }
     }

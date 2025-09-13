@@ -33,7 +33,7 @@ void inserir_Apresentador(Apresentadores** lista, Apresentadores* novo) {
         else{
             Apresentadores* atual = *lista;
             /*Percorre a lista até chegar no primeiro apresentdor que vem depois do novo na ordem alfabética*/
-            while (atual->prox != NULL && strcmp(novo->nomeapresentador, atual->prox->nomeapresentador) > 0){
+            while (atual->prox != NULL && strcasecmp(novo->nomeapresentador, atual->prox->nomeapresentador) > 0){
                 atual = atual->prox;
             }
             novo->prox = atual->prox;
@@ -49,16 +49,14 @@ void inserir_Apresentador(Apresentadores** lista, Apresentadores* novo) {
     }
 }
 
-void cadastrar_Apresentador(Apresentadores** lista,int* flag){
-    char nome[50];
-    printf("Informe o nome do apresentador.\n");
-    scanf("%49[^\n]", nome);
-    getchar();
-    Apresentadores* novo = criar_Apresentador(nome);
-    if(novo){
-        *flag = 1;
-        inserir_Apresentador(lista, novo);
-    } 
+void cadastrar_Apresentador(Apresentadores** lista,char* nome,int* flag){
+    if (!Busca_Apresentador(nome, *lista)) {
+        Apresentadores* novo = criar_Apresentador(nome);
+        if(novo){
+            *flag = 1;
+            inserir_Apresentador(lista, novo);
+        } 
+    }
 }
 
 void Mostra_Apresentador(Apresentadores* lista){

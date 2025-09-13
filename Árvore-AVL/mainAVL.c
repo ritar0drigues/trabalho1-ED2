@@ -18,27 +18,22 @@ void menu_Programas(Programas** raiz, Apresentadores** lista, Stream* stream, Ca
         switch (op){
             
             case 1: {
-                char nome[50];
+                char nome[50],periodicidade[50], duracao[50], inicio[50], tipo[50], apresentadorNome[50];
                 printf("Informe o nome do programa: ");
                 scanf("%49[^\n]", nome);
                 getchar();
-
-                if (busca_Programa((*raiz), nome) != NULL) {
-                    printf("❌ ERRO: O programa '%s' já está cadastrado nesta categoria.\n", nome);
+                lerDadosPrograma(periodicidade, duracao, inicio, tipo, apresentadorNome);
+                int flag = 0;
+                int tem_prog = 0;
+                Cadastra_Programa(raiz, nome, (*lista), stream, categoria,&flag,&tem_prog,periodicidade, duracao, inicio, tipo, apresentadorNome);
+                if(tem_prog){
+                    printf("Já existe um Programa com o nome '%s' cadastrado.\n", nome);
+                }
+                else if (flag) {
+                    printf("✅ Programa '%s' cadastrado com sucesso!\n", nome);
                 }
                 else {
-                    int flag = 0;
-                    int tem_prog = 0;
-                    Cadastra_Programa(raiz, nome, (*lista), stream, categoria,&flag,&tem_prog);
-                    if(tem_prog){
-                        printf("Já existe um Programa com o nome '%s' cadastrado.\n", nome);
-                    }
-                    else if (flag) {
-                        printf("✅ Programa '%s' cadastrado com sucesso!\n", nome);
-                    }
-                    else {
-                        printf("❌ ERRO: Cadastro cancelado\n Apresentador não encontrado ou Apresentador não corresponde à categoria ou à stream.\n");
-                    }
+                    printf("❌ ERRO: Cadastro cancelado\n Apresentador não encontrado ou Apresentador não corresponde à categoria ou à stream.\n");
                 }
                 break;
             }
@@ -61,7 +56,8 @@ void menu_Programas(Programas** raiz, Apresentadores** lista, Stream* stream, Ca
                 Programas* result = busca_Programa((*raiz), nome);
                 if (result == NULL) {
                     printf("❌ Programa '%s' não encontrado.\n", nome);
-                } else {
+                }
+                else {
                     printf("✅ Programa encontrado:\n");
                     mostrarDadosPrograma(result);
                 }
@@ -74,14 +70,12 @@ void menu_Programas(Programas** raiz, Apresentadores** lista, Stream* stream, Ca
                 scanf("%49[^\n]", nomePrograma);
                 getchar();
                 int achou;
-                if (busca_Programa(categoria->programas, nomePrograma)){
-                    removePrograma(&(categoria->programas), nomePrograma,&achou);
-                    if(achou){
-                        printf("✅ Programa '%s' removido com sucesso!\n", nomePrograma);
-                    }
-                    else {
-                    printf("❌ ERRO: Programa '%s' não encontrado na categoria.\n", nomePrograma);
+                removePrograma(&(categoria->programas), nomePrograma,&achou);
+                if(achou){
+                    printf("✅ Programa '%s' removido com sucesso!\n", nomePrograma);
                 }
+                else{
+                printf("❌ ERRO: Programa '%s' não encontrado na categoria.\n", nomePrograma);
                 }
                 break;
             }
@@ -134,11 +128,7 @@ void menu_Categorias(Categorias** listacircular, Apresentadores** lista, Stream*
                 scanf("%49[^\n]", tipo);
                 getchar();
 
-                // verifica se já existe categoria com esse nome
-                if (busca_Categorias((*listacircular), nome) != NULL) {
-                    printf("❌ ERRO: A categoria '%s' já está cadastrada.\n", nome);
-                }
-                else if (!validarTipoCategoria(tipo)){
+                if (!validarTipoCategoria(tipo)){
                     printf("Tipo inválido.\n");
                 }
                 else{
@@ -388,7 +378,7 @@ void menu_Stream(Stream** raiz, Apresentadores** lista) {
                     }
                 }
                 else {
-                    printf("❌ Stream '%s' não encontrada.\n", nomeStream);
+                    printf("❌ Stream não possui programas no dia e horário informados ou stream '%s' não encontrada.\n", nomeStream);
                 }
                 break;
             }
@@ -418,12 +408,19 @@ void menu_Apresentador(Apresentadores** lista, Stream* raiz) {
         scanf("%d", &op);
         getchar();
 
-        switch (op) {
+        switch (op){
             case 1:{
                 int flag = 0;
-                cadastrar_Apresentador(lista,&flag);
+                char nome[50];
+                printf("Informe o nome do apresentador.\n");
+                scanf("%49[^\n]", nome);
+                getchar();
+                cadastrar_Apresentador(lista,nome,&flag);
                 if(flag){
                     printf("✅ Apresentador cadastrado com sucesso!\n");
+                }
+                else{
+                    printf("Erro! apresentador informado Já está cadastrado.\n");
                 }
             }
             break;

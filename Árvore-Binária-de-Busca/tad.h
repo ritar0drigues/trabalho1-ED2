@@ -61,7 +61,7 @@ typedef struct Programas{
 //Apresentador
 Apresentadores* criar_Apresentador(const char* nome);
 void inserir_Apresentador(Apresentadores** lista, Apresentadores* novo);
-void cadastrar_Apresentador(Apresentadores** lista, int* flag);
+void cadastrar_Apresentador(Apresentadores** lista,char* nome, int* flag);
 void Mostra_Apresentador(Apresentadores* lista);
 Apresentadores* Busca_Apresentador(const char* nome, Apresentadores* lista);
 void atualizarFimHistorico(Apresentadores* apresentador);
@@ -83,7 +83,7 @@ void libera_Categoria(Categorias* lista);
 //Programa
 void lerDadosPrograma(char* periodicidade, char* duracao, char* inicio, char* tipo, char* apresentador);
 Programas* criarPrograma(const char* nome, const char* periodicidade, const char* duracao, const char* inicio, const char* tipo, Apresentadores* apresentador);
-void Cadastra_Programa(Programas** raiz,char* nome,Apresentadores* lista, Stream* stream, Categorias* categoria,int* flag,int* tem_prog);
+void Cadastra_Programa(Programas** raiz, char* nome, Apresentadores* lista, Stream* stream, Categorias* categoria,int* flag,int* tem_prog,char* periodicidade, char* duracao, char* inicio, char* tipo, char* apresentadorNome);
 Programas* busca_Programa(Programas* raiz, char* nome);
 void mostra_Programa(Programas* raiz);
 void copiarDadosPrograma(Programas* destino, Programas* origem);
