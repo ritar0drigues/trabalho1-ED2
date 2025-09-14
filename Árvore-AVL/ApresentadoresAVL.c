@@ -143,15 +143,19 @@ void adicionarHistorico(Apresentadores* apresentador, const char* nomestream) {
 void Associar_Stream(Stream* stream, Apresentadores* apresentador, Categorias* novaCategoria,int* flag){
     int aux=1;
     if (validarAssociacao(stream, apresentador)){
-        if (apresentador->tamanho_historico > 0) {
-            atualizarFimHistorico(apresentador);
+        if(apresentador->categoria != novaCategoria){
+            if(apresentador->streamatual!= stream){
+                if (apresentador->tamanho_historico > 0) {
+                    atualizarFimHistorico(apresentador);
+                }
+                else{
+                    Cria_Historico(apresentador,stream->nomestream);
+                    aux = 0;
+                }
+                if(aux)
+                    adicionarHistorico(apresentador, stream->nomestream);
+            }
         }
-        else{
-            Cria_Historico(apresentador,stream->nomestream);
-            aux = 0;
-        }
-        if(aux)
-            adicionarHistorico(apresentador, stream->nomestream);
         apresentador->streamatual = stream;
         apresentador->categoria = novaCategoria;
         *flag = 1;
