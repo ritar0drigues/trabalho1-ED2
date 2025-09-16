@@ -1,0 +1,180 @@
+=== RESULTADOS STREAMS ===
+
+Inserção - Tempo: 0.00104000s, Média: 0.00000208s, Ordem: 3
+Busca - Tempo: 0.00025300s, Média: 0.00000051s, Encontradas: 500/500
+
+
+=== RESULTADOS STREAMS ===
+
+Inserção - Tempo: 0.00112400s, Média: 0.00000225s, Ordem: 3
+Busca - Tempo: 0.00028700s, Média: 0.00000057s, Encontradas: 500/500
+
+
+=== RESULTADOS STREAMS ===
+
+Inserção - Tempo: 0.00115100s, Média: 0.00000230s, Ordem: 3
+Busca - Tempo: 0.00032000s, Média: 0.00000064s, Encontradas: 500/500
+
+
+=== RESULTADOS STREAMS ===
+
+Inserção - Tempo: 0.00095900s, Média: 0.00000192s, Ordem: 3
+Busca - Tempo: 0.00030200s, Média: 0.00000060s, Encontradas: 500/500
+
+
+=== RESULTADOS STREAMS ===
+
+Inserção - Tempo: 0.00097200s, Média: 0.00000194s, Ordem: 3
+Busca - Tempo: 0.00027000s, Média: 0.00000054s, Encontradas: 500/500
+
+
+=== RESULTADOS STREAMS ===
+
+Inserção - Tempo: 0.00103600s, Média: 0.00000207s, Ordem: 3
+Busca - Tempo: 0.00026600s, Média: 0.00000053s, Encontradas: 500/500
+
+
+=== RESULTADOS STREAMS ===
+
+Inserção - Tempo: 0.00109100s, Média: 0.00000218s, Ordem: 3
+Busca - Tempo: 0.00027900s, Média: 0.00000056s, Encontradas: 500/500
+
+
+=== RESULTADOS STREAMS ===
+
+Inserção - Tempo: 0.00099600s, Média: 0.00000199s, Ordem: 3
+Busca - Tempo: 0.00026700s, Média: 0.00000053s, Encontradas: 500/500
+
+
+=== RESULTADOS STREAMS ===
+
+Inserção - Tempo: 0.00097200s, Média: 0.00000194s, Ordem: 3
+Busca - Tempo: 0.00026200s, Média: 0.00000052s, Encontradas: 500/500
+
+
+=== RESULTADOS STREAMS ===
+
+Inserção - Tempo: 0.00095300s, Média: 0.00000191s, Ordem: 3
+Busca - Tempo: 0.00025100s, Média: 0.00000050s, Encontradas: 500/500
+
+
+=== RESULTADOS STREAMS ===
+
+Inserção - Tempo: 0.00088800s, Média: 0.00000178s, Ordem: 3
+Busca - Tempo: 0.00026300s, Média: 0.00000053s, Encontradas: 500/500
+
+
+=== RESULTADOS STREAMS ===
+
+Inserção - Tempo: 0.00091000s, Média: 0.00000182s, Ordem: 3
+Busca - Tempo: 0.00026300s, Média: 0.00000053s, Encontradas: 500/500
+
+
+=== RESULTADOS STREAMS ===
+
+Inserção - Tempo: 0.00096100s, Média: 0.00000192s, Ordem: 3
+Busca - Tempo: 0.00026900s, Média: 0.00000054s, Encontradas: 500/500
+
+
+=== RESULTADOS STREAMS ===
+
+Inserção - Tempo: 0.00101200s, Média: 0.00000202s, Ordem: 3
+Busca - Tempo: 0.00026600s, Média: 0.00000053s, Encontradas: 500/500
+
+
+=== RESULTADOS STREAMS ===
+
+Inserção - Tempo: 0.00096500s, Média: 0.00000193s, Ordem: 3
+Busca - Tempo: 0.00028300s, Média: 0.00000057s, Encontradas: 500/500
+
+
+=== RESULTADOS STREAMS ===
+
+Inserção - Tempo: 0.00098400s, Média: 0.00000197s, Ordem: 3
+Busca - Tempo: 0.00031100s, Média: 0.00000062s, Encontradas: 500/500
+
+
+=== RESULTADOS STREAMS ===
+
+Inserção - Tempo: 0.00096600s, Média: 0.00000193s, Ordem: 3
+Busca - Tempo: 0.00027300s, Média: 0.00000055s, Encontradas: 500/500
+
+
+=== RESULTADOS STREAMS ===
+
+Inserção - Tempo: 0.00109200s, Média: 0.00000218s, Ordem: 3
+Busca - Tempo: 0.00025600s, Média: 0.00000051s, Encontradas: 500/500
+
+
+=== RESULTADOS STREAMS ===
+
+Inserção - Tempo: 0.00110800s, Média: 0.00000222s, Ordem: 3
+Busca - Tempo: 0.00029200s, Média: 0.00000058s, Encontradas: 500/500
+
+
+=== RESULTADOS STREAMS ===
+
+Inserção - Tempo: 0.00096400s, Média: 0.00000193s, Ordem: 3
+Busca - Tempo: 0.00026600s, Média: 0.00000053s, Encontradas: 500/500
+
+
+=== RESULTADOS STREAMS ===
+
+Inserção - Tempo: 0.00105900s, Média: 0.00000212s, Ordem: 3
+Busca - Tempo: 0.00027300s, Média: 0.00000055s, Encontradas: 500/500
+
+
+=== RESULTADOS STREAMS ===
+
+Inserção - Tempo: 0.00101800s, Média: 0.00000204s, Ordem: 3
+Busca - Tempo: 0.00026300s, Média: 0.00000053s, Encontradas: 500/500
+
+
+=== RESULTADOS STREAMS ===
+
+Inserção - Tempo: 0.00056600s, Média: 0.00000113s, Ordem: 3
+Busca - Tempo: 0.00019100s, Média: 0.00000038s, Encontradas: 500/500
+
+
+=== RESULTADOS STREAMS ===
+
+Inserção - Tempo: 0.00095300s, Média: 0.00000191s, Ordem: 3
+Busca - Tempo: 0.00028000s, Média: 0.00000056s, Encontradas: 500/500
+
+
+=== RESULTADOS STREAMS ===
+
+Inserção - Tempo: 0.00102600s, Média: 0.00000205s, Ordem: 3
+Busca - Tempo: 0.00028500s, Média: 0.00000057s, Encontradas: 500/500
+
+
+=== RESULTADOS STREAMS ===
+
+Inserção - Tempo: 0.00087200s, Média: 0.00000174s, Ordem: 3
+Busca - Tempo: 0.00026300s, Média: 0.00000053s, Encontradas: 500/500
+
+
+=== RESULTADOS STREAMS ===
+
+Inserção - Tempo: 0.00092700s, Média: 0.00000185s, Ordem: 3
+Busca - Tempo: 0.00026200s, Média: 0.00000052s, Encontradas: 500/500
+
+
+=== RESULTADOS STREAMS ===
+
+Inserção - Tempo: 0.00092700s, Média: 0.00000185s, Ordem: 3
+Busca - Tempo: 0.00025000s, Média: 0.00000050s, Encontradas: 500/500
+
+
+=== RESULTADOS STREAMS ===
+
+Inserção - Tempo: 0.00088800s, Média: 0.00000178s, Ordem: 3
+Busca - Tempo: 0.00026700s, Média: 0.00000053s, Encontradas: 500/500
+
+
+=== RESULTADOS STREAMS ===
+
+Inserção - Tempo: 0.00112200s, Média: 0.00000224s, Ordem: 3
+Busca - Tempo: 0.00029700s, Média: 0.00000059s, Encontradas: 500/500
+
+

@@ -3,9 +3,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define NUM_STREAMS 50000
-#define NUM_PROGRAMAS 50000
-#define NUM_APRESENTADORES 50000
+#define NUM_STREAMS 500
+#define NUM_PROGRAMAS 500
+#define NUM_APRESENTADORES 500
 #define NUM_CATEGORIAS 1
 
 // Arquivos para salvar resultados

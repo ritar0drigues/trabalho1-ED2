@@ -110,7 +110,7 @@ void atualizarFimHistorico(Apresentadores* apresentador){
 } 
 
 void adicionarHistorico(Apresentadores* apresentador, const char* nomestream) {
-    if(apresentador && apresentador->historico){
+    if(apresentador){
         time_t tempo_atual;
         struct tm *info_tempo;
         char data[20];
