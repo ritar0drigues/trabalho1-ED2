@@ -399,7 +399,7 @@ void menu_Apresentador(Apresentadores** lista, Stream* raiz) {
         printf("\n-------- MENU APRESENTADORES --------\n");
         printf("1- Cadastrar Apresentador\n");
         printf("2- Listar Apresentadores\n");
-        printf("3- Associar Apresentador a uma Stream\n");
+        printf("3- Associar/Trocar Apresentador de Stream\n");
         printf("4- Histórico do Apresentador\n");
         printf("5- Filtrar Apresentadores por Categoria\n");
         printf("6- Voltar\n");
@@ -411,7 +411,7 @@ void menu_Apresentador(Apresentadores** lista, Stream* raiz) {
             case 1:{
                 int flag = 0;
                 char nome[50];
-                printf("Informe o nome do apresentador.\n");
+                printf("Informe o nome do apresentador:\n");
                 scanf("%49[^\n]", nome);
                 getchar();
                 cadastrar_Apresentador(lista,nome,&flag);
@@ -469,7 +469,7 @@ void menu_Apresentador(Apresentadores** lista, Stream* raiz) {
                             printf("✅ Apresentador '%s' associado à categoria '%s' da stream '%s' com sucesso!\n",buscarAp, novaCategoria, buscarSt);
                         }
                         else{
-                            printf("O apresentador já está associado a essa stream nessa categoria.\n");
+                            printf("O apresentador já está associado a essa stream, mas em outra categoria com programa.\n");
                         }
                     }
                 }

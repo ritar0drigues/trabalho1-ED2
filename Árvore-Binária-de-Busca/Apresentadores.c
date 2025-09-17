@@ -22,43 +22,40 @@ Apresentadores* criar_Apresentador(const char* nome){
     return novo; 
 }
 
-void inserir_Apresentador(Apresentadores** lista, Apresentadores* novo) {
-    if (*lista){
-        /*Verifica se o nome do novo apresentador vem antes do nome do primeiro na ordem alfbética, se sim insere o novo apresentador   no início*/
-        if(strcasecmp(novo->nomeapresentador, (*lista)->nomeapresentador) < 0){ 
-            novo->prox = *lista;
-            (*lista)->ant = novo;
-            *lista = novo;
-        }
-        else{
-            Apresentadores* atual = *lista;
-            /*Percorre a lista até chegar no primeiro apresentdor que vem depois do novo na ordem alfabética*/
-            while (atual->prox != NULL && strcasecmp(novo->nomeapresentador, atual->prox->nomeapresentador) > 0){
-                atual = atual->prox;
-            }
-            novo->prox = atual->prox;
-            if(atual->prox){//Verifica se o atual->prox não é NULL antes de acessá-lo pois o no atual pode ser o último nó da lista.
-                atual->prox->ant = novo;
-            }
-            atual->prox = novo;
-            novo->ant = atual;
-        }
-    }
-    else{
-        *lista = novo;
-    }
-}
-
 void cadastrar_Apresentador(Apresentadores** lista,char* nome,int* flag){
-    if (!Busca_Apresentador(nome, *lista)) {
-        Apresentadores* novo = criar_Apresentador(nome);
-        if(novo){
-            *flag = 1;
-            inserir_Apresentador(lista, novo);
-        } 
+    Apresentadores* novo = criar_Apresentador(nome);
+    Apresentadores* atual = *lista;
+    Apresentadores* anterior = NULL;
+    int existe = 0;
+    //percorre até achar posição que o no será cadastrado ou duplicado/
+    while(atual != NULL && existe == 0 && strcasecmp(nome, atual->nomeapresentador) > 0){
+        anterior = atual;
+        atual = atual->prox;
+    }
+    //verifica se parou em alguém com o mesmo nome que estão tentando cadastrar/
+    if(atual != NULL && strcasecmp(nome, atual->nomeapresentador) == 0){
+        existe = 1;
+    }
+    if(existe == 0){
+        if (anterior == NULL) {
+            /* insere no início da lista*/
+            novo->prox = *lista;
+            if(*lista != NULL){
+                (*lista)->ant = novo;
+            }
+            *lista = novo;
+        }else{
+            /* insere no meio ou no fim da lista*/
+            novo->prox = atual;
+            if (atual != NULL) {
+                atual->ant = novo;
+            }
+            anterior->prox = novo;
+            novo->ant = anterior;
+        }
+        *flag = 1; 
     }
 }
-
 void Mostra_Apresentador(Apresentadores* lista){
     Apresentadores* atual = lista;
     if(atual){
