@@ -471,7 +471,7 @@ void menu_Apresentador(Apresentadores** lista, Stream* raiz) {
                             printf("✅ Apresentador '%s' associado à categoria '%s' da stream '%s' com sucesso!\n",buscarAp, novaCategoria, buscarSt);
                         }
                         else{
-                            printf("O apresentador já está associado a essa stream, mas em outra categoria com programa.\n");
+                            printf("O apresentador já está associado a essa stream, mas, em outra categoria com programa.\n");
                         }
                     }
                 }
