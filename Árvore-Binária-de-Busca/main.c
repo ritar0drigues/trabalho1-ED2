@@ -461,7 +461,9 @@ void menu_Apresentador(Apresentadores** lista, Stream* raiz) {
                     Categorias* categoria = busca_Categorias(stream->categoria, novaCategoria);
                     if (categoria == NULL) {
                         printf("❌ ERRO: Categoria '%s' não encontrada na stream '%s'.\n", novaCategoria, buscarSt);
-                    }
+                    }  else if(apresentador->streamatual==stream && apresentador->categoria== categoria){
+                        printf("O apresentador já está associado a essa stream nessa mesma categoria.\n");
+                   }
                     else {
                         int flag =0;
                         Associar_Stream(stream, apresentador, categoria,&flag);
