@@ -79,18 +79,20 @@ Programas* criarPrograma(const char* nome, const char* periodicidade, const char
 }
 
 int fatorBalanceamentoPrograma(Programas* NO){
-    int fb;
-    if(NO->direita==NULL && NO->esquerda!=NULL){//Calcule o fb se o no da direita for NULL
-        fb = NO->esquerda->altura - (-1) ;
-    }
-    else if(NO->esquerda==NULL && NO->direita!=NULL){//Calcula o fb se o no da esquerda for NULL
-        fb = (-1) - NO->direita->altura ;
-    }
-    else if(NO->direita && NO->esquerda){//Calcula o fb se o nenhum dos filhos são NULL
-        fb = NO->esquerda->altura - NO->direita->altura;
-    }
-    else{//Se os dois filhos forem NULL o fb é zero
-        fb = 0;
+    int fb = 0;
+    if(NO){
+        if(NO->direita==NULL && NO->esquerda!=NULL){//Calcule o fb se o no da direita for NULL
+            fb = NO->esquerda->altura - (-1) ;
+        }
+        else if(NO->esquerda==NULL && NO->direita!=NULL){//Calcula o fb se o no da esquerda for NULL
+            fb = (-1) - NO->direita->altura ;
+        }
+        else if(NO->direita && NO->esquerda){//Calcula o fb se o nenhum dos filhos são NULL
+            fb = NO->esquerda->altura - NO->direita->altura;
+        }
+        else{//Se os dois filhos forem NULL o fb é zero
+            fb = 0;
+        }
     }
     return fb;
 }
@@ -104,24 +106,26 @@ int So_um_filhopro(Programas* NO){
 }
 
 void Atualiza_Alt_Programa(Programas** NO){
-    if(!((*NO)->esquerda)&& !((*NO)->direita)){//Se  o no é folha a altura é zero
-        (*NO)->altura = 0;
-    }
-    else if(So_um_filhopro((*NO))){ 
-        if((*NO)->direita){   //se o filho for o nó da direita
-            (*NO)->altura = (*NO)->direita->altura+1;
-        }    
-        else{   //se o filho for o nó da esquerda
-            (*NO)->altura = (*NO)->esquerda->altura+1;
+    if(*NO){
+        if(!((*NO)->esquerda)&& !((*NO)->direita)){//Se  o no é folha a altura é zero
+            (*NO)->altura = 0;
         }
-    }
-    else{  //Se o nó tem dois filhos
-        /*Verifica qual dos filhos é o mais alto e atribui a "alturadofilho+1" à altura do nó*/ 
-        if((*NO)->esquerda->altura > (*NO)->direita->altura){
-            (*NO)->altura = (*NO)->esquerda->altura+1;
+        else if(So_um_filhopro((*NO))){ 
+            if((*NO)->direita){   //se o filho for o nó da direita
+                (*NO)->altura = (*NO)->direita->altura+1;
+            }    
+            else{   //se o filho for o nó da esquerda
+                (*NO)->altura = (*NO)->esquerda->altura+1;
+            }
         }
-        else{
-            (*NO)->altura = (*NO)->direita->altura+1;
+        else{  //Se o nó tem dois filhos
+            /*Verifica qual dos filhos é o mais alto e atribui a "alturadofilho+1" à altura do nó*/ 
+            if((*NO)->esquerda->altura > (*NO)->direita->altura){
+                (*NO)->altura = (*NO)->esquerda->altura+1;
+            }
+            else{
+                (*NO)->altura = (*NO)->direita->altura+1;
+            }
         }
     }
 }
